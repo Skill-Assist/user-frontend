@@ -13,10 +13,6 @@ type Props = {
 const ChallengeQuestion: React.FC<Props> = ({ requiredFiles, multiFiles }: Props) => {
   const [data, setData] = useState<any>()
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
-
   return (
     <div className={styles.container}>
       {requiredFiles && (

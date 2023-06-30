@@ -54,11 +54,11 @@ const ExamCard: React.FC<Props> = ({ company, exam }: Props) => {
           {exam.level && exam.level}
         </h2>
 
-        <span className={styles.company}>exam.owner</span>
+        <span className={styles.company}>{exam.__createdBy__.name}</span>
 
         <div className={styles.info}>
           <p className="status">Não iniciado</p>
-          <p className={styles.deadline}>Restam {examLeftTime} dias</p>
+          <p className={styles.deadline}>Restam X</p>
         </div>
       </div>
     </Link>

@@ -45,12 +45,12 @@ const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
           />
         </div>
         <div className={styles.content}>
-          {/* <h2 className={styles.title}>
-          {invitation.examRef.title} {invitation.examRef.subtitle && invitation.examRef.subtitle}{" "}
-          {invitation.examRef.level && invitation.examRef.level}
-        </h2> */}
+          <h2 className={styles.title}>
+            title, subtitle
+            level
+          </h2>
 
-          {/* <span className={styles.company}>{invitation.examRef.owner}</span> */}
+          <span className={styles.company}>owner</span>
 
           <div className={styles.actions}>
             <button onClick={() => {
@@ -94,7 +94,7 @@ const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
                     <button onClick={close}>Cancelar</button>
                     <button>Confirmar</button>
                   </div>
-                  
+
                 </>
               )}
             </div>

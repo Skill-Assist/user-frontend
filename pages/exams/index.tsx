@@ -38,24 +38,12 @@ const Exams: React.FC = (user: any) => {
       setProfile(userResponse.data);
 
       const examResponse = await examService.getExams(userResponse.data.enrolledExamsRef);
-      console.log(examResponse)
       setExams(examResponse);
       setLoading(false);
     };
 
     fetchData();
   }, []);
-
-  const showExams = () => {
-    if (profile && exams) {
-      return exams.map((exam: Exam, index: number) => {
-        if (exam.status === "live") {
-          return <ExamCard company={company[index]} exam={exam} key={index} />;
-        }
-      });
-    }
-    return "Não há exames disponíveis.";
-  };
 
   return (
     <Layout
@@ -66,8 +54,16 @@ const Exams: React.FC = (user: any) => {
       active={1}
       user={profile ? profile : false}
     >
-      <div>
-        <div className={styles.container}>{!loading && showExams()}</div>
+      <div className={styles.cards}>
+        {!loading && profile && exams ? exams.map((exam: Exam, index: number) => {
+
+          if (exam.status === "live") {
+            return <ExamCard company={company[index]} exam={exam} key={index} />
+          }
+        })
+          :
+          "Não há exames disponíveis."
+        }
       </div>
     </Layout>
   );

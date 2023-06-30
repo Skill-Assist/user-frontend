@@ -13,7 +13,7 @@ const examService = {
     try {
       const examsRequests = examsId.map(async (examsId) => {
         const examResponse = await axios.get(
-          `${API_URL}/exam/findOne?key=id&value=${examsId}`,
+          `${API_URL}/exam/findOne?key=id&value=${examsId}&relations=createdBy&map=true`,
           config
         );
         return examResponse.data;
@@ -37,10 +37,12 @@ const examService = {
         const invitationResponse = await axios.get(
           `${API_URL}/examInvitation?key=id&value=${invitationId}&relations=exam,user`,
           config
-        );
-        return invitationResponse.data;
-      });
-
+        ).then((res) => res.data);
+        return invitationResponse;
+      }
+      );
+      
+      
       const invitationResponse = await Promise.all(invitationsRequests);
       return invitationResponse;
     } catch (error: any) {

@@ -87,7 +87,7 @@ const Sidebar: React.FC<Props> = ({ active, secondary, disabled }: Props) => {
   };
 
   useEffect(() => {
-    console.log(navigationItems);
+    (navigationItems);
   }, [navigationItems]);
 
   return (
@@ -98,7 +98,6 @@ const Sidebar: React.FC<Props> = ({ active, secondary, disabled }: Props) => {
         alt="Logo da plataforma"
         onClick={() => {
           setShow(!show);
-          console.log(show);
         }}
       />
 

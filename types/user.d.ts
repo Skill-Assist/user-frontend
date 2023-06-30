@@ -1,9 +1,7 @@
-import { Exam } from "./exam";
-
 type User = {
-  id: number;
-  name: string;
-  email: string;
-  __exams__: Partial<Exam[]>;
-  answersCount: number;
+  id: number,
+  name: string,
+  email: string,
+  roles: string[],
+  ownedQuestions?: string[]
 };

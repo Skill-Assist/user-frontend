@@ -159,7 +159,6 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
       const response = await questionService
         .updateAnswer(answersId[questionIndex], answer)
         .then((res) => res.json())
-        .then((data) => console.log(data))
         .then(() => {
           setQuestionIndex(questionIndex + 1);
         });
@@ -174,7 +173,6 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
 
   const handleMouseEnter = () => {
     if (mouseOut) {
-      console.log(answersId[questionIndex])
       let time = new Date();
       setMouseTrack([
         ...mouseTrack,
@@ -213,7 +211,6 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
               <Card>
                 <h2
                   className={styles.title}
-                  onClick={() => console.log(mouseTrack)}
                 >
                   Questão
                 </h2>

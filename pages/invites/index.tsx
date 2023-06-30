@@ -6,6 +6,7 @@ import InvitationCard from "@/components/invitationCard";
 import userService from "../../services/userService";
 import examService from "@/services/examService";
 import { Invitation } from "@/types/invitation";
+import Search from "@/components/search";
 
 
 const Invitations: React.FC = (user: any) => {
@@ -30,6 +31,7 @@ const Invitations: React.FC = (user: any) => {
   const [loading, setLoading] = useState(true);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [profile, setProfile] = useState<any>(user);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -37,24 +39,13 @@ const Invitations: React.FC = (user: any) => {
       let userResponse = await userService.getProfile();
       setProfile(userResponse.data);
 
-      let invitesResponse = await examService.getInvitations(userResponse.data.invitationsRef);
-      setInvitations(invitesResponse);
+      let invitationsResponse = await examService.getInvitations(userResponse.data.invitationsRef);
+      setInvitations(invitationsResponse);
       setLoading(false);
     };
 
     fetchData();
   }, []);
-
-  const showInvites = () => {
-    if (profile && invitations) {
-      return invitations.map((invitation: any, index: number) => {
-        if (invitation[0].accepted === false) {
-          return <InvitationCard company={company[index]} invitation={invitation[0]} key={index} />;
-        }
-      });
-    }
-    return "Você não foi convidado para nenhum exame ainda.";
-  };
 
   return (
     <Layout
@@ -66,7 +57,26 @@ const Invitations: React.FC = (user: any) => {
       user={profile ? profile : false}
     >
       <div>
-        <div className={styles.container}>{!loading && showInvites()}</div>
+        <div className={styles.container}>
+          <Search
+            search={search}
+            onSearch={setSearch}
+            placeholder="Pesquisar convites"
+          />
+
+          <div className={styles.cards}>
+
+            {!loading && profile && invitations ? invitations.map((invitation: any, index: number) => {
+              if (invitation.data[0].accepted === false) {
+                return <InvitationCard company={company[index]} invitation={invitation.data[0]} key={index} />;
+              }
+            })
+              :
+              "Você não foi convidado para nenhum exame ainda."
+            }
+
+          </div>
+        </div>
       </div>
     </Layout>
   );

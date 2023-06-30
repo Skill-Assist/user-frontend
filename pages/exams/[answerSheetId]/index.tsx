@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "framer-motion";
 import { TailSpin } from "react-loader-spinner";
@@ -31,11 +31,11 @@ interface Props {
   user: any;
 }
 
-const examPage: any = ({
+const ExamPage: FC<Props> = ({
   sectionsData,
   section2ASData,
   termData: { durationInHours, startDate },
-  ...examPage
+  ...ExamPage
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -46,7 +46,7 @@ const examPage: any = ({
   const router = useRouter();
 
   let examLeftTime: Date = new Date();
-  let user = examPage;
+  let user = ExamPage;
 
   if (durationInHours) {
     const startExamDate = new Date(startDate);
@@ -114,7 +114,7 @@ const examPage: any = ({
             onSubmit={submitHandler}
             id="exam"
           >
-            {sectionsData.map((section, index) => (
+            {/* {sectionsData.map((section, index) => (
               <div className={styles.cardWrapper}>
                 <Card key={index}>
                   <div className={styles.cardContent}>
@@ -141,7 +141,7 @@ const examPage: any = ({
                   </div>
                 </Card>
               </div>
-            ))}
+            ))} */}
 
             <div className={styles.actions}>
               <button
@@ -246,20 +246,17 @@ const examPage: any = ({
   );
 };
 
-export default examPage;
+export default ExamPage;
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx
 ): Promise<any> => {
-  // get token from cookies
   const { token } = ctx.req.cookies;
-  // TODO: check if user is logged in
 
-  // get sections data
   const { answerSheetId } = ctx.params as { answerSheetId: string };
 
   const answerSheetResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/${answerSheetId}`,
+    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOne?key=id&value=${answerSheetId}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -297,8 +294,8 @@ export const getServerSideProps: GetServerSideProps = async (
 
   return {
     props: {
-      sectionsData: answerSheetResponse.sections,
-      section2ASData: answerSheetResponse.sectionToAnswerSheetsRef,
+      // sectionsData: answerSheetResponse.sections,
+      // section2ASData: answerSheetResponse.sectionToAnswerSheetsRef,
       termData,
     },
   };

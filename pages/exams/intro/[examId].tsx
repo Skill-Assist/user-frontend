@@ -1,20 +1,19 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { AnimatePresence } from "framer-motion";
+import { TailSpin } from "react-loader-spinner";
 import { BsArrowLeft } from "react-icons/bs";
 
 import Card from "@/components/card";
 import Button from "@/components/button";
+import Modal from "@/components/modal";
+
+import examService from "@/services/examService";
+import { Exam } from "@/types/exam";
 
 import styles from "./styles.module.scss";
-import { useRouter } from "next/router";
-import { Exam } from "@/types/exam";
-import userService from "@/services/userService";
-import { User } from "@/types/user";
-import examService from "@/services/examService";
-import { AnimatePresence } from "framer-motion";
-import { TailSpin } from "react-loader-spinner";
-import Modal from "@/components/modal";
 
 interface Props {
   examData: Exam;
@@ -61,16 +60,8 @@ const Intro: React.FC<Props> = ({ examData, userData }: Props) => {
               </h1>
             </div>
             <div className={styles.testInfos}>
-              <p>Número de etapas: {examData.section.length}</p>
+              <p>Número de etapas: {examData.__sections__ && examData.__sections__.length}</p>
               <div>
-                {examData.deadline && (
-                  <p>
-                    Prazo:{" "}
-                    {new Date(examData.deadline).toLocaleDateString("pt-BR", {
-                      timeZone: "UTC",
-                    })}
-                  </p>
-                )}
                 {examData.durationInHours && (
                   <p>
                     Duração: {examData.durationInHours}{" "}
@@ -119,7 +110,7 @@ const Intro: React.FC<Props> = ({ examData, userData }: Props) => {
                 Seus dados são encriptados para segurança e proteção das
                 informações.
               </li>
-              <li onClick={() => console.log(isAgree)}>
+              <li>
                 Em caso de dificuldades técnicas, não deixe de acionar o
                 suporte.
               </li>
@@ -211,15 +202,12 @@ const Intro: React.FC<Props> = ({ examData, userData }: Props) => {
 export default Intro;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // get token from cookies
   const { token } = ctx.req.cookies;
-  // TODO: check if user is logged in
 
-  // get exam data
   const { examId } = ctx.params as { examId: string };
 
   const examResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/exam/${examId}`,
+    process.env.NEXT_PUBLIC_BASE_URL + `/exam/findOne?key=id&value=${examId}&relations=createdBy,sections&map=true`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -228,7 +216,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   ).then((res) => res.json());
 
-  // get user data
   const userResponse = await fetch(
     process.env.NEXT_PUBLIC_BASE_URL + `/user/profile`,
     {
