@@ -1,0 +1,38 @@
+.formContainer {
+  div {
+    display: flex;
+    gap: 10px;
+    color: var(--primary);
+    margin-bottom: 10px;
+
+    label {
+      position: relative;
+      padding-left: 25px;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    input {
+      display: none;
+    }
+
+    label:before {
+      content: "";
+      display: inline-block;
+
+      width: 16px;
+      height: 16px;
+
+      border-radius: 50%;
+
+      position: absolute;
+      left: 0;
+      border: 1px solid var(--primary);
+    }
+
+    input:checked + label:before {
+      background-color: var(--primary);
+      box-shadow: inset 0 0 0 1px white;
+    }
+  }
+}

@@ -1,0 +1,124 @@
+.card {
+  min-width: 300px;
+  max-width: 400px;
+  height: 220px;
+  margin: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-1);
+  cursor: pointer;
+
+  &:hover {
+    scale: 1.04;
+    transition: all 0.15s;
+  }
+
+  .header {
+    position: relative;
+    display: flex;
+    height: 60px;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    justify-content: center;
+
+    .logo {
+      display: flex;
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 30px;
+      border-radius: 50%;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 40px;
+    height: calc(100% - 100px);
+    width: 100%;
+
+    .title {
+      font-size: 18px;
+      text-align: center;
+      width: 60%;
+      margin: 0 auto;
+    }
+
+    .company {
+      font-size: 16px;
+      color: var(--legend);
+      font-weight: bold;
+      text-align: center;
+      width: 60%;
+      margin: 0 auto;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 20px;
+
+  
+  button {
+    background: var(--highlight-1);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 5px 10px;
+    width: 150px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:first-child{
+      background-color: var(--warning);
+    }
+    
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+.modalTitle{
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.modalText{
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.modalActions{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 20px;
+
+  
+  button {
+    background: var(--highlight-1);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 5px 10px;
+    width: 150px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:first-child{
+      background-color: var(--warning);
+    }
+    
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}

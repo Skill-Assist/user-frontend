@@ -1,0 +1,33 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@monaco-editor/react": "^4.5.1",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.2",
+    "@types/node": "20.2.3",
+    "@types/react": "18.2.6",
+    "@types/react-cookies": "^0.1.0",
+    "@types/react-dom": "18.2.4",
+    "axios": "^1.4.0",
+    "framer-motion": "^10.12.17",
+    "next": "13.4.3",
+    "react": "18.2.0",
+    "react-cookies": "^0.1.1",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.9.0",
+    "react-loader-spinner": "^5.3.4",
+    "react-timer-hook": "^3.0.6",
+    "sass": "^1.62.1",
+    "typescript": "5.0.4"
+  }
+}
