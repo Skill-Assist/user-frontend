@@ -101,18 +101,18 @@ const Home: React.FC = (user: any) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = ctx.req.cookies;
 
-  // if (!token) {
-  //   return {
-  //     redirect: {
-  //       destination: `${process.env.NEXT_PUBLIC_LOGIN_URL}`,
-  //       permanent: false,
-  //     },
-  //   };
-  // } else {
+  if (!token) {
+    return {
+      redirect: {
+        destination: `${process.env.NEXT_PUBLIC_LOGIN_URL}`,
+        permanent: false,
+      },
+    };
+  } else {
     return {
       props: {},
     }
-  // }
+  }
 };
 
 export default Home;
