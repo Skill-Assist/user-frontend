@@ -98,6 +98,8 @@ const Home: React.FC = (user: any) => {
   );
 };
 
+// redeploy commit
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = ctx.req.cookies;
 
