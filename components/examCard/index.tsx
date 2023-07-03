@@ -1,44 +1,58 @@
-import React from "react";
+import { FC } from "react";
 
 import styles from "./styles.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { Exam } from "@/types/exam";
-
-type Company = {
-  name: string;
-  color: string;
-  logo: string;
-};
+import { Invitation } from "@/types/invitation";
+import Timer from "../timer";
 
 type Props = {
-  company: Company;
-  exam: Exam;
+  invitation: Invitation;
 };
 
-let examLeftTime: string = "";
+const ExamCard: FC<Props> = ({ invitation }: Props) => {
+  const { examRef: exam } = invitation;
+  const { createdByRef: company } = exam;
 
-const ExamCard: React.FC<Props> = ({ company, exam }: Props) => {
-  // if (exam.deadline) {
-  //   const deadlineDate = new Date(exam.deadline);
-  //   const currentDate = new Date();
+  let examLeftTime: Date = new Date();
+  if (exam.answerSheetsRef) {
+    const startExamDate = new Date(exam.answerSheetsRef.startDate);
+    const currentDate = new Date();
 
-  //   const diff = deadlineDate.getTime() - currentDate.getTime();
+    const timeSpent = Math.floor(
+      (currentDate.getTime() - startExamDate.getTime()) / 1000
+    );
 
-  //   const diffInHours = Math.floor(diff / (1000 * 3600));
+    const diff = exam.durationInHours * 3600 - timeSpent;
 
-  //   if (diffInHours > 24) {
-  //     const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
-  //     examLeftTime = `${diffInDays}`
-  //   } else {
-  //     examLeftTime = `${diffInHours}`;
-  //   }
-  // } else if (exam.durationInHours && !exam.deadline) {
-  //   examLeftTime = `${exam.durationInHours} horas`;
-  // }
+    examLeftTime.setSeconds(examLeftTime.getSeconds() + diff);
+  }
+
+  let submitionLeftTime: Date = new Date();
+
+  if (invitation && exam.answerSheetsRef) {
+    const startExamDate = new Date(exam.answerSheetsRef.startDate);
+    const currentDate = new Date();
+
+    const timeSpent = Math.floor(
+      (currentDate.getTime() - startExamDate.getTime()) / 1000
+    );
+
+    const diff = invitation.expirationInHours * 3600 - timeSpent;
+
+    submitionLeftTime.setSeconds(submitionLeftTime.getSeconds() + diff);
+  }
 
   return (
-    <Link href={`/exams/intro/${exam.id}`} className={styles.card}>
+    <Link
+      href={
+        exam.answerSheetsRef
+          ? `/exams/${exam.answerSheetsRef.id}`
+          : `/exams/intro/${exam.id}`
+      }
+      className={styles.card}
+    >
       <div className={styles.header} style={{ backgroundColor: company.color }}>
         <Image
           className={styles.logo}
@@ -54,11 +68,25 @@ const ExamCard: React.FC<Props> = ({ company, exam }: Props) => {
           {exam.level && exam.level}
         </h2>
 
-        <span className={styles.company}>{exam.__createdBy__.name}</span>
+        <span className={styles.company}>{exam.createdByRef.name}</span>
 
         <div className={styles.info}>
-          <p className="status">Não iniciado</p>
-          <p className={styles.deadline}>Restam X</p>
+          {exam.answerSheetsRef ? (
+            <>
+              <span className={styles.leftTime}>
+                Você tem <Timer expiryTimestamp={examLeftTime} /> para finalizar
+                seu teste
+              </span>
+            </>
+          ) : (
+            <>
+              <p>Não iniciado</p>
+              <p className={styles.deadline}>
+                {/* Restam <Timer expiryTimestamp={submitionLeftTime} /> */}
+                Restam X dias
+              </p>
+            </>
+          )}
         </div>
       </div>
     </Link>

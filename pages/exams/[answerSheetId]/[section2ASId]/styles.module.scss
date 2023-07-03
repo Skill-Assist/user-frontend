@@ -22,24 +22,7 @@
 .statisticsCard {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 0 20px 10px;
-
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 20px;
-
-    h2 {
-      font-size: 18px;
-    }
-
-    svg {
-      fill: var(--primary);
-      cursor: pointer;
-    }
-  }
+  padding: 0 20px 15px;
 
   ul {
     display: flex;
@@ -51,6 +34,26 @@
       gap: 10px;
       color: var(--primary);
     }
+  }
+}
+
+.statisticsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  div{
+    display: flex;
+    gap: 10px
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  svg {
+    fill: var(--primary);
+    cursor: pointer;
   }
 }
 
@@ -120,4 +123,12 @@
 
 .oneBtn {
   justify-content: end;
+}
+
+.leftTime{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+
 }

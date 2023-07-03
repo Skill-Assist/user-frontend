@@ -9,38 +9,25 @@ import { Invitation } from "@/types/invitation";
 import Search from "@/components/search";
 
 
-const Invitations: React.FC = (user: any) => {
-  const company = [
-    {
-      color: "#00E519",
-      logo: "/images/ultrapar.jpg",
-      name: "Ultrapar",
-    },
-    {
-      color: "#00428D",
-      logo: "/images/ambev.svg",
-      name: "Ambev",
-    },
-    {
-      color: "#251E32",
-      logo: "/images/inteli.svg",
-      name: "Inteli",
-    },
-  ];
-
+const Invitations: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [profile, setProfile] = useState<any>(user);
+  const [pendingInvitations, setPendingInvitations] = useState<Invitation[]>([]);
+  const [expiredInvitations, setExpiredInvitations] = useState<Invitation[]>([]);
+  const [deniedInvitations, setDeniedInvitations] = useState<Invitation[]>([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      let userResponse = await userService.getProfile();
-      setProfile(userResponse.data);
+      let invitationsResponse = await examService.getInvitations();
 
-      let invitationsResponse = await examService.getInvitations(userResponse.data.invitationsRef);
-      setInvitations(invitationsResponse);
+      let pendingInvitationsData = invitationsResponse.filter((invitation: Invitation) => invitation.accepted === false)
+      setPendingInvitations(pendingInvitationsData)
+
+
+      // let expiredInvitationsData = invitationsResponse.filter((invitation: Invitation) => invitation.expirationInHours === false)
+      // let deniedInvitationsData = invitationsResponse.filter((invitation: Invitation) => invitation.accepted === false)
+
       setLoading(false);
     };
 
@@ -54,17 +41,47 @@ const Invitations: React.FC = (user: any) => {
       header
       headerTitle="Seus Convites"
       active={2}
-      user={profile ? profile : false}
     >
       <div>
         <div className={styles.container}>
+          {/* TODO: Implement search based in the exams owners */}
           <Search
             search={search}
             onSearch={setSearch}
             placeholder="Pesquisar convites"
           />
 
-          <div className={styles.cards}>
+          {
+            pendingInvitations.length === 0 &&
+              expiredInvitations.length === 0 &&
+              deniedInvitations.length === 0 ? (
+              "Nenhum convite ainda."
+            ) : (
+              // TODO: Split the screen between: Pending, expired and denied invites
+
+              <div className={styles.cardsContainer}>
+
+                <div className={styles.pendingCards}>
+                  <div className={styles.divisor}>
+                    <p>Convites Pendentes</p>
+                    <hr />
+                  </div>
+                  <div className={styles.cards}>
+                    {!loading && pendingInvitations && pendingInvitations.map((invitation: Invitation) => (
+                      <>
+                      <InvitationCard invitation={invitation} />
+                      </>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+
+
+
+          {/* <div className={styles.cards}>
 
             {!loading && profile && invitations ? invitations.map((invitation: any, index: number) => {
               if (invitation.data[0].accepted === false) {
@@ -75,7 +92,7 @@ const Invitations: React.FC = (user: any) => {
               "Você não foi convidado para nenhum exame ainda."
             }
 
-          </div>
+          </div> */}
         </div>
       </div>
     </Layout>

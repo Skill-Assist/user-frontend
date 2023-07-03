@@ -1,50 +1,36 @@
+import { Invitation } from "@/types/invitation";
 import axios from "axios";
 import cookie from "react-cookies";
 
 const API_URL = "http://localhost:5500/api/v1";
 
 const examService = {
-  getExams: async (examsId: number[]) => {
+  getExams: async () => {
     let config = {
       headers: {
         Authorization: `Bearer ${cookie.load("token")}`,
       },
     };
     try {
-      const examsRequests = examsId.map(async (examsId) => {
-        const examResponse = await axios.get(
-          `${API_URL}/exam/findOne?key=id&value=${examsId}&relations=createdBy&map=true`,
-          config
-        );
-        return examResponse.data;
-      });
+      const profile = await axios.get(`${API_URL}/user/profile`, config);
 
-      const examsResponse = await Promise.all(examsRequests);
-      return examsResponse;
+      const exams = profile.data.invitationsRef.filter((invitation: Invitation) => invitation.accepted === true);
+
+      return exams;
     } catch (error: any) {
       return error.response;
     }
   },
 
-  getInvitations: async (invitationsId: number[]) => {
+  getInvitations: async () => {
     let config = {
       headers: {
         Authorization: `Bearer ${cookie.load("token")}`,
       },
     };
     try {
-      const invitationsRequests = invitationsId.map(async (invitationId) => {
-        const invitationResponse = await axios.get(
-          `${API_URL}/examInvitation?key=id&value=${invitationId}&relations=exam,user`,
-          config
-        ).then((res) => res.data);
-        return invitationResponse;
-      }
-      );
-      
-      
-      const invitationResponse = await Promise.all(invitationsRequests);
-      return invitationResponse;
+      const profile = await axios.get(`${API_URL}/user/profile`, config);
+      return profile.data.invitationsRef;
     } catch (error: any) {
       return error.response;
     }

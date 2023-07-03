@@ -1,44 +1,23 @@
-import Header from "@/components/header";
 import Layout from "@/components/layout";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, FC } from "react";
 import styles from "./styles.module.scss";
+
+import examService from "@/services/examService";
+import { Invitation } from "@/types/invitation";
+import Search from "@/components/search";
 import ExamCard from "@/components/examCard";
 
-import userService from "../../services/userService";
-import { Exam } from "@/types/exam";
-import examService from "@/services/examService";
 
-const Exams: React.FC = (user: any) => {
-  const company = [
-    {
-      color: "#00E519",
-      logo: "/images/ultrapar.jpg",
-      name: "Ultrapar",
-    },
-    {
-      color: "#00428D",
-      logo: "/images/ambev.svg",
-      name: "Ambev",
-    },
-    {
-      color: "#251E32",
-      logo: "/images/inteli.svg",
-      name: "Inteli",
-    },
-  ];
-
+const Invitations: FC = () => {
   const [loading, setLoading] = useState(true);
-  const [exams, setExams] = useState<Exam[]>([]);
-  const [profile, setProfile] = useState<any>(user);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      let userResponse = await userService.getProfile();
-      setProfile(userResponse.data);
-
-      const examResponse = await examService.getExams(userResponse.data.enrolledExamsRef);
-      setExams(examResponse);
+      let invitationsResponse = await examService.getExams();
+      setInvitations(invitationsResponse)
       setLoading(false);
     };
 
@@ -50,23 +29,51 @@ const Exams: React.FC = (user: any) => {
       sidebar
       footer
       header
-      headerTitle="Seus Testes"
+      headerTitle="Seus Exames"
       active={1}
-      user={profile ? profile : false}
     >
-      <div className={styles.cards}>
-        {!loading && profile && exams ? exams.map((exam: Exam, index: number) => {
+      <div>
+        <div className={styles.container}>
+          {/* TODO: Implement search based in the exams owners */}
+          <Search
+            search={search}
+            onSearch={setSearch}
+            placeholder="Pesquisar exames"
+          />
 
-          if (exam.status === "live") {
-            return <ExamCard company={company[index]} exam={exam} key={index} />
+          {
+            invitations.length === 0 ? (
+              "Você não não está inscrito em nenhum exame ainda."
+            ) : (
+              <div className={styles.cardsContainer}>
+                <div className={styles.cards}>
+                  {!loading && invitations && invitations.map((invitation: Invitation) => (
+                    <ExamCard invitation={invitation} />
+                  ))}
+                </div>
+              </div>
+            )
           }
-        })
-          :
-          "Não há exames disponíveis."
-        }
+
+
+
+
+          {/* <div className={styles.cards}>
+
+            {!loading && profile && invitations ? invitations.map((invitation: any, index: number) => {
+              if (invitation.data[0].accepted === false) {
+                return <InvitationCard company={company[index]} invitation={invitation.data[0]} key={index} />;
+              }
+            })
+              :
+              "Você não foi convidado para nenhum exame ainda."
+            }
+
+          </div> */}
+        </div>
       </div>
     </Layout>
   );
 };
 
-export default Exams;
+export default Invitations;

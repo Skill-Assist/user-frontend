@@ -1,10 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 
 import styles from "./styles.module.scss";
 import Sidebar from "../sidebar";
 import Header from "../header";
 import Footer from "../footer";
 import { AnimatePresence } from "framer-motion";
+import userService from "@/services/userService";
 
 type Props = {
   active: number;
@@ -27,8 +28,19 @@ const Layout: React.FC<Props> = ({
   active,
   children,
   secondarySidebar,
-  user,
 }: Props) => {
+  const [profile, setProfile] = useState<User>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let userResponse = await userService.getProfile();
+      setProfile(userResponse.data);
+    };
+
+    fetchData();
+  }, []);
+
+
   return (
     <div className={styles.container}>
       <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
@@ -42,7 +54,7 @@ const Layout: React.FC<Props> = ({
       </AnimatePresence>
 
       <div className={styles.rightContainer}>
-        {header && <Header title={headerTitle} user={user} />}
+        {header && <Header title={headerTitle} user={profile ? profile : false} />}
         <div
           className={`${styles.content} ${header && styles.mt} ${
             footer && styles.mb

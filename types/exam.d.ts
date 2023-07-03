@@ -1,3 +1,4 @@
+import { AnswerSheet } from "./answerSheet";
 import { Section } from "./section";
 import { User } from "./user";
 
@@ -12,6 +13,7 @@ export type Exam = {
   showScore: boolean,
   isPublic: boolean,
   status: "live" | "archived" | "draft",
-  __createdBy__?: User
+  createdByRef?: User
+  answerSheetsRef?: AnswerSheet
   __sections__?: Section[]
 };

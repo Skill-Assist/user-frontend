@@ -14,12 +14,15 @@ import {
   AiOutlineClockCircle,
   AiFillEyeInvisible,
   AiFillEye,
+  AiOutlineReload,
 } from "react-icons/ai";
 import { BiTimer } from "react-icons/bi";
 import ChallengeQuestion from "@/components/questions/challenge";
 import { useRouter } from "next/router";
 import { Question } from "@/types/question";
 import questionService from "@/services/questionService";
+import { Section2AS } from "@/types/section2AS";
+import Timer from "@/components/timer";
 
 export type Option = {
   [key: string]: string;
@@ -27,8 +30,8 @@ export type Option = {
 
 interface Props {
   sectionName: string;
-  answersId: number[];
-  user: any;
+  sectionToAnswerSheet: Section2AS;
+  sectionLeftTimeInSeconds: number;
 }
 
 export type keyStrokesProctoring = {
@@ -44,12 +47,30 @@ export type mouseProctoring = {
   questionId: string;
 }[];
 
-const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
+const Section: React.FC<Props> = ({ sectionToAnswerSheet, sectionName, sectionLeftTimeInSeconds }: Props) => {
+  const { answersRef: answersId, startDate: sectionStartDate } = sectionToAnswerSheet;
+
+  let startDate = new Date(sectionStartDate);
+  let currentDate = new Date();
+
+  let spentTime = currentDate.getTime() - startDate.getTime();
+
+  let spentTimeInSeconds = Math.floor(spentTime / 1000);
+  let spentTimeInMinutes = Math.floor(spentTimeInSeconds / 60);
+
+  let sectionLeftTime: Date = new Date();
+
+  if (sectionLeftTimeInSeconds) {
+    sectionLeftTime.setSeconds(sectionLeftTime.getSeconds() + sectionLeftTimeInSeconds);
+  }
+
+
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showStatistics, setShowStatistics] = useState(true);
   const [questions, setQuestions] = useState<Question[]>();
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [answer, setAnswer] = useState("");
+  const [sectionSpentTime, setSectionSpentTime] = useState(spentTimeInMinutes);
 
   const [mouseOut, setMouseOut] = useState<Date | null>(null);
   const [mouseTrack, setMouseTrack] = useState<any>([]);
@@ -128,7 +149,7 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
       case "programming":
         return (
           // <ProgammingQuestion language={questions[questionIndex].language} />
-          <ProgammingQuestion onChange={(value: string) => handleAnswerChange(value)}/>
+          <ProgammingQuestion onChange={(value: string) => handleAnswerChange(value)} />
         );
 
       case "challenge":
@@ -190,6 +211,10 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
     setMouseOut(time);
   };
 
+  const reloadHandler = () => {
+    setSectionSpentTime(spentTimeInMinutes)
+  }
+
   return (
     <div
       className={styles.section}
@@ -203,7 +228,6 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
         active={1}
         secondarySidebar
         headerTitle={sectionName}
-        user={user}
       >
         <div className={styles.question}>
           <div className={styles.standardStructure}>
@@ -225,46 +249,52 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
             <div className={styles.statistics}>
               <Card>
                 <div className={styles.statisticsCard}>
-                  <div>
+                  <div className={styles.statisticsHeader}>
                     <h2>Estatísticas</h2>
-                    {showStatistics && (
-                      <AiFillEyeInvisible onClick={toggleStatistics} />
-                    )}
-                    {!showStatistics && (
-                      <AiFillEye onClick={toggleStatistics} />
-                    )}
+                    <div className={styles.actions}>
+                      <AiOutlineReload onClick={reloadHandler} />
+                      {showStatistics && (
+                        <AiFillEyeInvisible onClick={toggleStatistics} />
+                      )}
+                      {!showStatistics && (
+                        <AiFillEye onClick={toggleStatistics} />
+                      )}
+                    </div>
                   </div>
                   <ul>
                     <li>
                       <FaHourglassHalf />
-                      <p>
-                        Tempo restante para essa etapa:
-                        {showStatistics ? "19:59" : "--:--"}
+                      <p className={styles.leftTime}> 
+                        Tempo restante:{" "}
+                        {showStatistics ? <Timer
+                          expiryTimestamp={sectionLeftTime}
+                          onTimeIsOver={submitHandler}
+                        /> : "--:--"}
                       </p>
                     </li>
                     <li>
                       <IoDocumentTextOutline />
                       <p>
-                        Questões respondidas:
+                        Questão atual:{" "}
                         {showStatistics
                           ? questionIndex + 1 + "/" + questions.length
-                          : "--"}
+                          : " --"}
                       </p>
                     </li>
                     <li>
                       <AiOutlineClockCircle />
                       <p>
-                        Tempo médio por questão:{" "}
-                        {showStatistics ? "1:34" : "--:--"}
+                        Tempo médio por questão de{" "}
+                        {showStatistics ? (sectionSpentTime / (questionIndex + 1)).toFixed(0) + "min" : "--:--"}
                       </p>
                     </li>
-                    <li>
+                    {/* <li>
                       <BiTimer />
                       <p>
-                        Previsão de término do teste:
-                        {showStatistics ? "18:34" : "--:--"}
+                        Previsão de término do teste em{" "}
+                        {showStatistics ? (sectionSpentTime / (questionIndex + 1)) * questions.length : "--:--"}
                       </p>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </Card>
@@ -278,9 +308,8 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
                   {generateQuestions(questionIndex)}
                 </div>
                 <div
-                  className={`${styles.actions} ${
-                    questionIndex === 0 && styles.oneBtn
-                  }`}
+                  className={`${styles.actions} ${questionIndex === 0 && styles.oneBtn
+                    }`}
                 >
                   {questionIndex > 0 && (
                     <button onClick={previousQuestion}>Anterior</button>
@@ -301,29 +330,16 @@ const Section: React.FC<Props> = ({ answersId, sectionName, user }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // get token from cookies
   const { token } = ctx.req.cookies;
-  // TODO: check if user is logged in
 
-  // get sections data
   const { answerSheetId, section2ASId } = ctx.params as {
     answerSheetId: string;
     section2ASId: string;
   };
 
-  const answerSheetResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/${answerSheetId}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  ).then((res) => res.json());
-
   const section2ASResponse = await fetch(
     process.env.NEXT_PUBLIC_BASE_URL +
-      `/section-to-answer-sheet/${section2ASId}`,
+    `/section-to-answer-sheet/findOne?key=id&value=${section2ASId}&relations=answers,section`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -332,14 +348,33 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   ).then((res) => res.json());
 
-  const sectionName =
-    answerSheetResponse.sections[section2ASResponse.sectionRef - 1].name;
-  const answersId = section2ASResponse.answersRef;
+  const sectionName = "Nome padrão"
+
+  const startExamDate = new Date(section2ASResponse.startDate);
+  const currentDate = new Date();
+
+  const timeSpent = Math.floor(
+    (currentDate.getTime() - startExamDate.getTime()) / 1000
+  );
+
+  // const diff = section2ASResponse.__section__.durationInHours * 3600 - timeSpent;
+  const diff = 1 * 3600 - timeSpent;
+
+  if (diff <= 0) {
+    return {
+      redirect: {
+        destination: `/exams/${answerSheetId}`,
+        permanent: false,
+      },
+    };
+  }
+
 
   return {
     props: {
       sectionName,
-      answersId,
+      sectionToAnswerSheet: section2ASResponse,
+      sectionLeftTimeInSeconds: diff
     },
   };
 };

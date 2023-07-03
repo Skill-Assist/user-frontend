@@ -18,24 +18,17 @@ import examService from "@/services/examService";
 import styles from "./styles.module.scss";
 import Timer from "@/components/timer";
 
-interface Term {
-  deadline?: string;
-  durationInHours?: number;
-  startDate: string;
-}
-
 interface Props {
   sectionsData: Section[];
-  section2ASData: Section2AS[];
-  termData: Term;
+  sectionToAnswerSheets: Section2AS[];
+  examLeftTimeInSeconds: number;
   user: any;
 }
 
 const ExamPage: FC<Props> = ({
   sectionsData,
-  section2ASData,
-  termData: { durationInHours, startDate },
-  ...ExamPage
+  sectionToAnswerSheets,
+  examLeftTimeInSeconds
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -46,19 +39,9 @@ const ExamPage: FC<Props> = ({
   const router = useRouter();
 
   let examLeftTime: Date = new Date();
-  let user = ExamPage;
 
-  if (durationInHours) {
-    const startExamDate = new Date(startDate);
-    const currentDate = new Date();
-
-    const timeSpent = Math.floor(
-      (currentDate.getTime() - startExamDate.getTime()) / 1000
-    );
-
-    const diff = durationInHours * 3600 - timeSpent;
-
-    examLeftTime.setSeconds(examLeftTime.getSeconds() + diff);
+  if (examLeftTimeInSeconds) {
+    examLeftTime.setSeconds(examLeftTime.getSeconds() + examLeftTimeInSeconds);
   }
 
   const startSectionHandler = async (sectionId: number) => {
@@ -95,7 +78,6 @@ const ExamPage: FC<Props> = ({
         footer
         active={1}
         headerTitle="Seu Exame"
-        user={user}
       >
         <div className={styles.content}>
           <header className={styles.header}>
@@ -114,7 +96,7 @@ const ExamPage: FC<Props> = ({
             onSubmit={submitHandler}
             id="exam"
           >
-            {/* {sectionsData.map((section, index) => (
+            {sectionsData.map((section, index) => (
               <div className={styles.cardWrapper}>
                 <Card key={index}>
                   <div className={styles.cardContent}>
@@ -128,20 +110,26 @@ const ExamPage: FC<Props> = ({
                     <div className={styles.buttonsContainer}>
                       <Button
                         text={
-                          section2ASData[index]?.endDate
-                            ? "Finalizado"
-                            : "Resolver"
+                          sectionToAnswerSheets.length === 0 
+                            ? "Resolver"
+                            : sectionToAnswerSheets[index]?.endDate 
+                              ? "Finalizado" 
+                              : "Resolver"
                         }
                         type={
-                          section2ASData[index]?.endDate ? "finished" : "solve"
+                          sectionToAnswerSheets.length === 0 
+                            ? "solve" 
+                            : sectionToAnswerSheets[index]?.endDate 
+                              ? "finished" 
+                              : "solve"
                         }
-                        onClick={() => startSectionHandler(section.id)}
+                        onClick={sectionToAnswerSheets[index]?.endDate ? () => {} : () => startSectionHandler(section.id)}
                       />
                     </div>
                   </div>
                 </Card>
               </div>
-            ))} */}
+            ))}
 
             <div className={styles.actions}>
               <button
@@ -256,7 +244,17 @@ export const getServerSideProps: GetServerSideProps = async (
   const { answerSheetId } = ctx.params as { answerSheetId: string };
 
   const answerSheetResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOne?key=id&value=${answerSheetId}`,
+    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOne?key=id&value=${answerSheetId}&relations=user,exam,sectionToAnswerSheets&map=true`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  ).then((res) => res.json());
+ 
+  const sectionsResponse = await fetch(
+    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOneWithSections?id=${answerSheetId}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -267,11 +265,8 @@ export const getServerSideProps: GetServerSideProps = async (
 
   const termData = {
     startDate: answerSheetResponse.startDate,
-    // durationInHours:
-    //   answerSheetResponse.examRef.durationInHours !== null
-    //     ? answerSheetResponse.examRef.durationInHours
-    //     : 5,
-    durationInHours: 30,
+    durationInHours: answerSheetResponse.__exam__.durationInHours
+        
   };
 
   const startExamDate = new Date(termData.startDate);
@@ -292,11 +287,13 @@ export const getServerSideProps: GetServerSideProps = async (
     };
   }
 
+  const sectionToAnswerSheets = answerSheetResponse.__sectionToAnswerSheets__
+
   return {
     props: {
-      // sectionsData: answerSheetResponse.sections,
-      // section2ASData: answerSheetResponse.sectionToAnswerSheetsRef,
-      termData,
+      sectionsData: sectionsResponse.__exam__.__sections__,
+      sectionToAnswerSheets,
+      examLeftTimeInSeconds: diff,
     },
   };
 };

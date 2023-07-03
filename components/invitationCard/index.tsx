@@ -9,18 +9,14 @@ import Modal from "../modal";
 import examService from "@/services/examService";
 import { useRouter } from "next/router";
 
-type Company = {
-  name: string;
-  color: string;
-  logo: string;
-};
-
 type Props = {
-  company: Company;
   invitation: Invitation;
 };
 
-const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
+const InvitationCard: React.FC<Props> = ({ invitation }: Props) => {
+  const { examRef: exam } = invitation
+  const { createdByRef: company } = exam
+
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
@@ -28,9 +24,12 @@ const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
   const router = useRouter();
 
   const handleAccept = async () => {
+    setLoading(true);
     await examService.acceptInvitation(invitation.id);
     router.push(`/exams`);
   }
+
+  const examTitle = `${exam.title} ${exam.subtitle && exam.subtitle} ${exam.level && exam.level}`
 
   return (
     <>
@@ -46,11 +45,10 @@ const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
         </div>
         <div className={styles.content}>
           <h2 className={styles.title}>
-            title, subtitle
-            level
+          {examTitle}
           </h2>
 
-          <span className={styles.company}>owner</span>
+          <span className={styles.company}>{company.name}</span>
 
           <div className={styles.actions}>
             <button onClick={() => {
@@ -88,7 +86,7 @@ const InvitationCard: React.FC<Props> = ({ company, invitation }: Props) => {
                   <h2 className={styles.modalTitle}>Você tem certeza?</h2>
                   <p className={styles.modalText}>
                     Você tem certeza que deseja negar o convite para o exame{" "}
-                    <strong>invitation.examRef.title</strong>?
+                    <strong>{examTitle}</strong>?
                   </p>
                   <div className={styles.modalActions}>
                     <button onClick={close}>Cancelar</button>

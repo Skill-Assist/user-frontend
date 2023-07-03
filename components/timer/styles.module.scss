@@ -1,8 +1,9 @@
 .clockStyledTimer {
   display: flex;
-
+  gap: 5px;
   span {
     text-align: center;
     width: 16px;
+    margin: 0 1px;
   }
 }

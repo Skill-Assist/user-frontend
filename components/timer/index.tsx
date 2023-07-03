@@ -5,13 +5,13 @@ import styles from "./styles.module.scss";
 
 interface Props {
   expiryTimestamp: Date;
-  onTimeIsOver: (e: React.FormEvent<HTMLFormElement> | null) => void;
+  onTimeIsOver?: (e: React.FormEvent<HTMLFormElement> | null) => void;
 }
 
 const Timer: FC<Props> = ({ expiryTimestamp, onTimeIsOver }: Props) => {
   const { seconds, minutes, hours, days } = useTimer({
     expiryTimestamp,
-    onExpire: () => onTimeIsOver(null),
+    onExpire: () => onTimeIsOver ? onTimeIsOver(null) : null,
   });
 
   return (
@@ -28,10 +28,12 @@ const Timer: FC<Props> = ({ expiryTimestamp, onTimeIsOver }: Props) => {
 
       {!days && seconds >= 0 && (
         <div className={styles.clockStyledTimer}>
-          <span>{hours <= 9 ? "0" + hours : hours}</span>
-          {":"}
-          <span>{minutes <= 9 ? "0" + minutes : minutes}</span>
-          {":"}
+            {
+              hours != 0 
+                ? hours <= 9 ? "0" + hours + ":" : hours + ":"
+                : ""
+            }
+          <span>{minutes <= 9 ? "0" + minutes + ":" : minutes + ":"}</span>
           <span>
             {seconds <= 9 ? "0" + seconds : seconds === 0 ? "00" : seconds}
           </span>
