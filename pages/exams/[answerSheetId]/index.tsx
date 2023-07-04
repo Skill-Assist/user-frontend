@@ -32,7 +32,6 @@ const ExamPage: FC<Props> = ({
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState("");
   const close = () => setShowModal(false);
   const open = () => setShowModal(true);
 
@@ -133,18 +132,7 @@ const ExamPage: FC<Props> = ({
 
             <div className={styles.actions}>
               <button
-                type="button"
-                className={styles.rolesBtn}
                 onClick={() => {
-                  setModalContent("role");
-                  open();
-                }}
-              >
-                Ver Regras
-              </button>
-              <button
-                onClick={() => {
-                  setModalContent("submit");
                   open();
                 }}
                 type="button"
@@ -165,7 +153,6 @@ const ExamPage: FC<Props> = ({
             }}
           >
             <div className={styles.modalContainer}>
-              {modalContent === "submit" && (
                 <>
                   {loading ? (
                     <div className={styles.loadingContainer}>
@@ -192,7 +179,6 @@ const ExamPage: FC<Props> = ({
                           text="Cancelar"
                           type="cancel"
                           onClick={() => {
-                            setModalContent("");
                             close();
                           }}
                         />
@@ -206,26 +192,6 @@ const ExamPage: FC<Props> = ({
                     </>
                   )}
                 </>
-              )}
-              {modalContent === "role" && (
-                <>
-                  <h1>Regras</h1>
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quisquam, voluptatum.
-                  </p>
-                  <div className={styles.buttons}>
-                    <Button
-                      text="Voltar"
-                      type="cancel"
-                      onClick={() => {
-                        setModalContent("");
-                        close();
-                      }}
-                    />
-                  </div>
-                </>
-              )}
             </div>
           </Modal>
         )}

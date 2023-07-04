@@ -31,15 +31,15 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
 
   let submitionLeftTime: Date = new Date();
 
-  if (invitation && exam.answerSheetsRef) {
-    const startExamDate = new Date(exam.answerSheetsRef.startDate);
+  if (invitation) {
+    const invitationDate = new Date(invitation.createdAt);
     const currentDate = new Date();
 
     const timeSpent = Math.floor(
-      (currentDate.getTime() - startExamDate.getTime()) / 1000
+      (currentDate.getTime() - invitationDate.getTime()) / 1000
     );
 
-    const diff = invitation.expirationInHours * 3600 - timeSpent;
+    const diff = invitation.examRef.durationInHours * 3600 - timeSpent;
 
     submitionLeftTime.setSeconds(submitionLeftTime.getSeconds() + diff);
   }
@@ -47,9 +47,10 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
   return (
     <Link
       href={
-        exam.answerSheetsRef
-          ? `/exams/${exam.answerSheetsRef.id}`
-          : `/exams/intro/${exam.id}`
+        !exam.answerSheetsRef
+          ? `/exams/intro/${exam.id}`
+          : exam.answerSheetsRef && !exam.answerSheetsRef.endDate ? `/exams/${exam.answerSheetsRef.id}`
+          : `/results`
       }
       className={styles.card}
     >
@@ -71,7 +72,14 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
         <span className={styles.company}>{exam.createdByRef.name}</span>
 
         <div className={styles.info}>
-          {exam.answerSheetsRef ? (
+          {!exam.answerSheetsRef ? (
+            <>
+              <p>Não iniciado</p>
+              <p className={styles.deadline}>
+                Restam <Timer expiryTimestamp={submitionLeftTime} />
+              </p>
+            </>
+          ) : exam.answerSheetsRef && !exam.answerSheetsRef.endDate ? (
             <>
               <span className={styles.leftTime}>
                 Você tem <Timer expiryTimestamp={examLeftTime} /> para finalizar
@@ -80,11 +88,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
             </>
           ) : (
             <>
-              <p>Não iniciado</p>
-              <p className={styles.deadline}>
-                {/* Restam <Timer expiryTimestamp={submitionLeftTime} /> */}
-                Restam X dias
-              </p>
+              <p>Finalizado</p>
             </>
           )}
         </div>

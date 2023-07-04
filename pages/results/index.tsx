@@ -6,7 +6,7 @@ import Layout from '@/components/layout'
 const Results: React.FC = () => {
   return (
     <div className={styles.container}>
-      <Layout sidebar footer active={1}>
+      <Layout sidebar footer header headerTitle='Seus Resultados' active={3}>
         <div>Results</div>
       </Layout>
     </div>

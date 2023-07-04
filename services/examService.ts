@@ -94,7 +94,7 @@ const examService = {
       },
     };
     try {
-      const response = await fetch(`${API_URL}/answer-sheet/submit/${answerSheetId}`, {
+      const response = await fetch(`${API_URL}/answer-sheet/submit/?id=${answerSheetId}`, {
         method: "PATCH",
         headers: config.headers,
       }).then((res) => res.json());

@@ -1,7 +1,6 @@
 .card {
-  min-width: 300px;
+  min-width: 350px;
   max-width: 400px;
-  height: 220px;
   margin: auto;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow-1);
@@ -63,7 +62,9 @@
     
       p{
         text-align: center;
-        width: 80%;
+        width: 100%;
+        color: var(--highlight-1);
+        font-weight: bold;
       }
     }
   }

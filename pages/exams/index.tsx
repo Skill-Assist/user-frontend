@@ -42,7 +42,7 @@ const Invitations: FC = () => {
           />
 
           {
-            invitations.length === 0 ? (
+            !loading && invitations.length === 0 ? (
               "Você não não está inscrito em nenhum exame ainda."
             ) : (
               <div className={styles.cardsContainer}>
@@ -54,22 +54,6 @@ const Invitations: FC = () => {
               </div>
             )
           }
-
-
-
-
-          {/* <div className={styles.cards}>
-
-            {!loading && profile && invitations ? invitations.map((invitation: any, index: number) => {
-              if (invitation.data[0].accepted === false) {
-                return <InvitationCard company={company[index]} invitation={invitation.data[0]} key={index} />;
-              }
-            })
-              :
-              "Você não foi convidado para nenhum exame ainda."
-            }
-
-          </div> */}
         </div>
       </div>
     </Layout>
