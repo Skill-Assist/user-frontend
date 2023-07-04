@@ -40,7 +40,7 @@ const Header: React.FC<Props> = ({ goBack, title, user }: Props) => {
 
   const logout = () => {
     cookies.remove('token')
-    router.push('/login')
+    router.push(process.env.NEXT_PUBLIC_LOGIN_URL + '/login')
   }
 
   const wrapperRef = useRef(null);

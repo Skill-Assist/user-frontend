@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (!cookies.load('token')) {
       setLoading(true)
-      router.push("/login")
+      router.push(process.env.NEXT_PUBLIC_LOGIN_URL + "/login")
     }
     else {
       const fetchData = async () => {

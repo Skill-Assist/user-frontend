@@ -4,7 +4,8 @@ export type Invitation = {
   id: number,
   email: string,
   expirationInHours: number,
-  accepted: boolean,
+  accepted: boolean | null,
+  createdAt: Date
   examRef: Exam,
   userRef: number
 };

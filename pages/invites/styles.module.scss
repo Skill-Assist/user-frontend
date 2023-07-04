@@ -1,5 +1,5 @@
 .container {
-  padding: 16px;
+  padding: 16px 16px 32px 16px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -13,7 +13,7 @@
   width: 100%;
 }
 
-.pendingCards{
+.cardsRow{
   width: 100%;
 }
 
@@ -37,13 +37,13 @@
   margin: 5px 0;
 
   p{
-    width: max-content;
-    display: inline;
-    width: 20%;
+    white-space: nowrap;
+    font-weight: 600;
+    margin-right: 5px;
   }
 
   hr{
-    width: 80%;
+    width: 100%;
     color: var(--legend);
   }
 }

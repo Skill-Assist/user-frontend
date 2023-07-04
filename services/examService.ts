@@ -53,6 +53,23 @@ const examService = {
     }
   },
 
+  denyInvitation: async (invitationId: number) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+      },
+    };
+    try {
+      const response = await fetch(`${API_URL}/user/rejectInvitation?invitationId=${invitationId}`, {
+        method: "GET",
+        headers: config.headers,
+      }).then((res) => res.json());
+      return response;
+    } catch (error: any) {
+      return error.response;
+    }
+  },
+
   startExam: async (examId: number) => {
     let config = {
       headers: {

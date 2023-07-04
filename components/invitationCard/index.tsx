@@ -8,33 +8,67 @@ import { TailSpin } from "react-loader-spinner";
 import Modal from "../modal";
 import examService from "@/services/examService";
 import { useRouter } from "next/router";
+import Timer from "../timer";
 
 type Props = {
   invitation: Invitation;
+  denied?: boolean;
+  expired?: boolean;
 };
 
-const InvitationCard: React.FC<Props> = ({ invitation }: Props) => {
-  const { examRef: exam } = invitation
-  const { createdByRef: company } = exam
+const InvitationCard: React.FC<Props> = ({
+  invitation,
+  denied,
+  expired,
+}: Props) => {
+  const { examRef: exam } = invitation;
+  const { createdByRef: company } = exam;
 
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const close = () => setShowModal(false);
-  const open = () => setShowModal(true);
+  const open = () => {
+    setShowModal(true);
+    setLoading(false);
+  };
   const router = useRouter();
 
   const handleAccept = async () => {
     setLoading(true);
     await examService.acceptInvitation(invitation.id);
     router.push(`/exams`);
-  }
+  };
 
-  const examTitle = `${exam.title} ${exam.subtitle && exam.subtitle} ${exam.level && exam.level}`
+  const denyHandler = async () => {
+    setLoading(true);
+    await examService.denyInvitation(invitation.id);
+    router.reload();
+  };
+
+  const examTitle = `${exam.title} ${exam.subtitle && exam.subtitle} ${
+    exam.level && exam.level
+  }`;
+
+  let invitationDate = new Date(invitation.createdAt);
+  const currentDate = new Date();
+
+  const timeSpent = Math.floor(
+    (currentDate.getTime() - invitationDate.getTime()) / 1000
+  );
+
+  const diff = invitation.expirationInHours * 3600 - timeSpent;
+
+  let invitationLeftTime: Date = new Date();
+
+  invitationLeftTime.setSeconds(invitationLeftTime.getSeconds() + diff);
 
   return (
     <>
       <div className={styles.card}>
-        <div className={styles.header} style={{ backgroundColor: company.color }}>
+        <div
+          className={styles.header}
+          style={{ backgroundColor: company.color }}
+        >
           <Image
             className={styles.logo}
             src={company.logo}
@@ -44,18 +78,31 @@ const InvitationCard: React.FC<Props> = ({ invitation }: Props) => {
           />
         </div>
         <div className={styles.content}>
-          <h2 className={styles.title}>
-          {examTitle}
-          </h2>
+          <h2 className={styles.title}>{examTitle}</h2>
 
           <span className={styles.company}>{company.name}</span>
 
-          <div className={styles.actions}>
-            <button onClick={() => {
-              open();
-            }}>Negar</button>
-            <button onClick={handleAccept}>Aceitar</button>
-          </div>
+          {denied && <span className={styles.denied}>Convite negado</span>}
+
+          {expired && <span className={styles.expired}>Convite expirado</span>}
+
+          {!denied && !expired && (
+            <>
+              <div className={styles.timer}>
+                <Timer expiryTimestamp={invitationLeftTime} /> <br /> restantes
+              </div>
+              <div className={styles.actions}>
+                <button
+                  onClick={() => {
+                    open();
+                  }}
+                >
+                  Negar
+                </button>
+                <button onClick={handleAccept}>Aceitar</button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
@@ -90,9 +137,8 @@ const InvitationCard: React.FC<Props> = ({ invitation }: Props) => {
                   </p>
                   <div className={styles.modalActions}>
                     <button onClick={close}>Cancelar</button>
-                    <button>Confirmar</button>
+                    <button onClick={denyHandler}>Confirmar</button>
                   </div>
-
                 </>
               )}
             </div>
