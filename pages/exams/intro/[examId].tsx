@@ -207,7 +207,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { examId } = ctx.params as { examId: string };
 
   const examResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/exam/findOne?key=id&value=${examId}&relations=createdBy,sections&map=true`,
+    process.env.NEXT_PUBLIC_API_URL + `/exam/findOne?key=id&value=${examId}&relations=createdBy,sections&map=true`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -217,7 +217,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ).then((res) => res.json());
 
   const userResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/user/profile`,
+    process.env.NEXT_PUBLIC_API_URL + `/user/profile`,
     {
       headers: {
         "Content-Type": "application/json",

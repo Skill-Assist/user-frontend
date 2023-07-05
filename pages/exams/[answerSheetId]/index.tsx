@@ -210,7 +210,7 @@ export const getServerSideProps: GetServerSideProps = async (
   const { answerSheetId } = ctx.params as { answerSheetId: string };
 
   const answerSheetResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOne?key=id&value=${answerSheetId}&relations=user,exam,sectionToAnswerSheets&map=true`,
+    process.env.NEXT_PUBLIC_API_URL + `/answer-sheet/findOne?key=id&value=${answerSheetId}&relations=user,exam,sectionToAnswerSheets&map=true`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -220,7 +220,7 @@ export const getServerSideProps: GetServerSideProps = async (
   ).then((res) => res.json());
  
   const sectionsResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL + `/answer-sheet/findOneWithSections?id=${answerSheetId}`,
+    process.env.NEXT_PUBLIC_API_URL + `/answer-sheet/findOneWithSections?id=${answerSheetId}`,
     {
       headers: {
         "Content-Type": "application/json",

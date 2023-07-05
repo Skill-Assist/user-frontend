@@ -338,7 +338,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 
   const section2ASResponse = await fetch(
-    process.env.NEXT_PUBLIC_BASE_URL +
+    process.env.NEXT_PUBLIC_API_URL +
     `/section-to-answer-sheet/findOne?key=id&value=${section2ASId}&relations=answers,section`,
     {
       headers: {
