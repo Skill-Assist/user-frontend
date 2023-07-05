@@ -4,7 +4,6 @@ import styles from "./styles.module.scss";
 import Sidebar from "../sidebar";
 import Header from "../header";
 import Footer from "../footer";
-import { AnimatePresence } from "framer-motion";
 import userService from "@/services/userService";
 
 type Props = {
@@ -40,21 +39,20 @@ const Layout: React.FC<Props> = ({
     fetchData();
   }, []);
 
-
   return (
     <div className={styles.container}>
-      <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-        {sidebar && (
-          <Sidebar
-            active={active}
-            secondary={secondarySidebar ? true : false}
-            disabled={disabledSidebar}
-          />
-        )}
-      </AnimatePresence>
+      {sidebar && (
+        <Sidebar
+          active={active}
+          secondary={secondarySidebar ? true : false}
+          disabled={disabledSidebar}
+        />
+      )}
 
       <div className={styles.rightContainer}>
-        {header && <Header title={headerTitle} user={profile ? profile : false} />}
+        {header && (
+          <Header title={headerTitle} user={profile ? profile : false} />
+        )}
         <div
           className={`${styles.content} ${header && styles.mt} ${
             footer && styles.mb

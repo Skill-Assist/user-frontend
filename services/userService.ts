@@ -25,7 +25,7 @@ const userService = {
     };
     try {
       const profile = await axios.get(`${API_URL}/user/profile`, config);
-      return profile;
+      return profile.data;
     } catch (error: any) {
       return error.response;
     }

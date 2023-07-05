@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 
 import RocketImage from "/public/images/home/rocket.png";
@@ -9,10 +9,13 @@ import PlugAndPlayImage from "/public/images/home/plug-and-play.png";
 import CurveImage from "/public/images/home/curva.png";
 import IAImage from "/public/images/home/ai.png";
 import Image from "next/image";
-import { get } from "http";
 import { GetServerSideProps } from "next";
 
-const Home: React.FC = (user: any) => {
+interface Props {
+  user: User;
+}
+
+const Home: FC<Props> = ({ user }: Props) => {
   const content = [
     {
       image: AutomationImage,
@@ -47,7 +50,7 @@ const Home: React.FC = (user: any) => {
   ];
 
   return (
-    <Layout sidebar footer active={0} user={user && user}>
+    <Layout sidebar footer active={0}>
       <div>
         <div className={styles.container}>
           <h2>
@@ -98,21 +101,26 @@ const Home: React.FC = (user: any) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { token } = ctx.req.cookies;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { req, res } = context;
+  const { token } = req.cookies;
 
-  if (!token) {
-    return {
-      redirect: {
-        destination: `${process.env.NEXT_PUBLIC_LOGIN_URL}`,
-        permanent: false,
+  const userResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    };
-  } else {
-    return {
-      props: {},
     }
-  }
+  );
+
+  const user = await userResponse.json();
+
+  return {
+    props: {
+      user,
+    },
+  };
 };
 
 export default Home;
