@@ -21,12 +21,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .title {
       margin-left: 16px;
       font-size: 24px;
     }
-  
+
     .profile {
       position: relative;
       display: flex;
@@ -42,7 +42,7 @@
         color: var(--highlight-2);
         font-weight: bold;
       }
-  
+
       img {
         width: 30px;
         height: 30px;
@@ -70,5 +70,17 @@
         }
       }
     }
+  }
+}
+
+.headerInfo{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  img {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
   }
 }

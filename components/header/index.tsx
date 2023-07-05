@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import cookies from 'react-cookies'
 
 import styles from './styles.module.scss'
@@ -10,13 +10,20 @@ import photo from 'public/images/user-photo.svg'
 
 type Props = {
   title?: string;
-  user: any;
   goBack?: boolean;
 }
 
-const Header: React.FC<Props> = ({ goBack, title, user }: Props) => {
+const Header: FC<Props> = ({ goBack, title }: Props) => {
   const router = useRouter()
   const [profileOpened, setProfileOpened] = useState(false)
+  const [user, setUser] = useState<User>()
+
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (user) {
+      setUser(JSON.parse(user))
+    }
+  }, [])
 
   const openProfile = () => {
     setProfileOpened(true)
@@ -40,7 +47,7 @@ const Header: React.FC<Props> = ({ goBack, title, user }: Props) => {
 
   const logout = () => {
     cookies.remove('token')
-    router.push(process.env.NEXT_PUBLIC_LOGIN_URL + '/login')
+    router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`)
   }
 
   const wrapperRef = useRef(null);
@@ -60,11 +67,11 @@ const Header: React.FC<Props> = ({ goBack, title, user }: Props) => {
         <div className={styles.profile} onClick={() => openProfile()} ref={wrapperRef}>
           {
             user && (
-              <>
+              <div className={styles.headerInfo}>
                 <span>Olá, </span>
-                <span className={styles.user}>{user.name}</span>
-                <Image width={0} height={0} src={user.photo ? user.photo : photo} alt='Profile Image' />
-              </>
+                <span className={styles.user}>{user.name.split(" ")[0]}</span>
+                <Image width={200} height={200} src={user.logo ? user.logo : photo} alt='Profile Image' />
+              </div>
             )
           }
 
