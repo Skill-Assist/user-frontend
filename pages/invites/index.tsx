@@ -88,7 +88,9 @@ const Invitations: React.FC = () => {
             placeholder="Pesquisar convites"
           />
 
-          {pendingInvitations.length === 0 &&
+          {
+          !loading &&
+          pendingInvitations.length === 0 &&
           expiredInvitations.length === 0 &&
           deniedInvitations.length === 0 ? (
             "Nenhum convite ainda."
@@ -98,7 +100,7 @@ const Invitations: React.FC = () => {
               <div className={styles.cardsContainer}>
                 <div className={styles.cardsRow}>
                   <div className={styles.divisor}>
-                    <p className={styles.pendingP}>Convites Pendentes</p>
+                    <p>Convites Pendentes</p>
                     <hr />
                   </div>
                   <div className={styles.cards}>

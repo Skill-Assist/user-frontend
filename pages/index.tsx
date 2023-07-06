@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import styles from "./styles.module.scss";
 
 import RocketImage from "/public/images/home/rocket.png";
