@@ -1,30 +1,40 @@
-import Layout from "@/components/layout";
 import { useEffect, useState } from "react";
-import styles from "./styles.module.scss";
-import InvitationCard from "@/components/invitationCard";
 
-import userService from "../../services/userService";
-import examService from "@/services/examService";
-import { Invitation } from "@/types/invitation";
+import InvitationCard from "@/components/invitationCard";
 import Search from "@/components/search";
+import Layout from "@/components/layout";
 import InvitationPlaceholder from "@/components/InvitationPlaceholder";
+import Placeholder from "@/components/placeholder";
+import CardsRow from "@/components/cardsRow";
+
+import examService from "@/services/examService";
+import userService from "../../services/userService";
+
+import { Invitation } from "@/types/invitation";
+
+import styles from "./styles.module.scss";
 
 const Invitations: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [pendingInvitations, setPendingInvitations] = useState<Invitation[]>(
-    []
-  );
-  const [expiredInvitations, setExpiredInvitations] = useState<Invitation[]>(
-    []
-  );
-  const [deniedInvitations, setDeniedInvitations] = useState<Invitation[]>([]);
+  const [allExams, setAllExams] = useState<Invitation[]>([]);
   const [search, setSearch] = useState("");
+  const [cardsRows, setCardsRows] = useState<
+    {
+      title: string;
+      cards: Invitation[];
+      placeholder: string;
+      open: boolean;
+      type?: 'denied' | 'expired' | null;
+    }[]
+  >([]);
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       let invitationsResponse: Invitation[] =
         await examService.getInvitations();
+
+      setAllExams(invitationsResponse);
 
       let pendingInvitationsData: Invitation[] = [];
       let expiredInvitationsData: Invitation[] = [];
@@ -49,7 +59,7 @@ const Invitations: React.FC = () => {
         }
 
         if (invitation.accepted === null && expired) {
-          const alreadyExists = expiredInvitations.find(
+          const alreadyExists = expiredInvitationsData.find(
             (item) => item.id === invitation.id
           );
           if (!alreadyExists) {
@@ -58,7 +68,7 @@ const Invitations: React.FC = () => {
         }
 
         if (invitation.accepted === false) {
-          const alreadyExists = deniedInvitations.find(
+          const alreadyExists = deniedInvitationsData.find(
             (item) => item.id === invitation.id
           );
           if (!alreadyExists) {
@@ -67,9 +77,28 @@ const Invitations: React.FC = () => {
         }
       });
 
-      setPendingInvitations(pendingInvitationsData);
-      setExpiredInvitations(expiredInvitationsData);
-      setDeniedInvitations(deniedInvitationsData);
+      setCardsRows([
+        {
+          title: "Convites Pendentes",
+          cards: pendingInvitationsData,
+          open: true,
+          placeholder: "Você ainda não possui convites pendentes",
+        },
+        {
+          title: "Convites Expirados",
+          cards: expiredInvitationsData,
+          open: true,
+          placeholder: "Você ainda não possui cnvites expirados",
+          type: 'expired'
+        },
+        {
+          title: "Convites Negados",
+          cards: deniedInvitationsData,
+          open: true,
+          placeholder: "Você ainda não possui testes convites negados",
+          type: 'denied'
+        },
+      ]);
 
       setLoading(false);
     };
@@ -77,96 +106,47 @@ const Invitations: React.FC = () => {
     fetchData();
   }, []);
 
+  const toggleRow = (index: number) => {
+    setCardsRows(
+      cardsRows.map((row, i) => {
+        if (i === index) {
+          row.open = !row.open;
+        } else {
+          row.open = row.open;
+        }
+
+        return row;
+      })
+    );
+  };
+
   return (
     <Layout sidebar footer header headerTitle="Seus Convites" active={2}>
       <div>
         <div className={styles.container}>
-          {/* TODO: Implement search based in the exams owners */}
-          <Search
-            search={search}
-            onSearch={setSearch}
-            placeholder="Pesquisar convites"
-          />
-
-          {
-          !loading &&
-          pendingInvitations.length === 0 &&
-          expiredInvitations.length === 0 &&
-          deniedInvitations.length === 0 ? (
-            "Nenhum convite ainda."
+          {!loading && allExams.length === 0 ? (
+            <Placeholder />
           ) : (
+            <>
+              <Search
+                search={search}
+                onSearch={setSearch}
+                placeholder="Pesquisar convites"
+              />
 
-<>
-              <div className={styles.cardsContainer}>
-                <div className={styles.cardsRow}>
-                  <div className={styles.divisor}>
-                    <p>Convites Pendentes</p>
-                    <hr />
-                  </div>
-                  <div className={styles.cards}>
-                    {!loading && pendingInvitations.length > 0 ? (
-                      pendingInvitations.map((invitation: Invitation) => (
-                        <>
-                          <InvitationCard
-                            key={invitation.id}
-                            invitation={invitation}
-                          />
-                        </>
-                      ))
-                    ) : (
-                      <InvitationPlaceholder />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.cardsContainer}>
-                <div className={styles.cardsRow}>
-                  <div className={styles.divisor}>
-                    <p>Convites Expirados</p>
-                    <hr />
-                  </div>
-                  <div className={styles.cards}>
-                    {!loading && expiredInvitations.length > 0 ? (
-                      expiredInvitations.map((invitation: Invitation) => (
-                        <>
-                          <InvitationCard
-                            key={invitation.id}
-                            invitation={invitation}
-                            expired
-                          />
-                        </>
-                      ))
-                    ) : (
-                      <InvitationPlaceholder />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.cardsContainer}>
-                <div className={styles.cardsRow}>
-                  <div className={styles.divisor}>
-                    <p>Convites Negados</p>
-                    <hr />
-                  </div>
-                  <div className={styles.cards}>
-                    {!loading && deniedInvitations.length > 0 ? (
-                      deniedInvitations.map((invitation: Invitation) => (
-                        <>
-                          <InvitationCard
-                            key={invitation.id}
-                            invitation={invitation}
-                            denied
-                          />
-                        </>
-                      ))
-                    ) : (
-                      <InvitationPlaceholder />
-                    )}
-                  </div>
-                </div>
-              </div>
+              {cardsRows.map((row, index) => (
+                <CardsRow
+                  key={index}
+                  title={row.title}
+                  loading={loading}
+                  cards={row.cards}
+                  open={row.open}
+                  index={index}
+                  placeholder={row.placeholder}
+                  toggleRow={toggleRow}
+                  type={row.type}
+                />
+              ))}
             </>
           )}
         </div>

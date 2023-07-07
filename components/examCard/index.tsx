@@ -47,16 +47,15 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
   return (
     <Link
       href={
-        !exam.answerSheetsRef
+        !exam.answerSheetsRef?.startDate
           ? `/exams/intro/${exam.id}`
-          : exam.answerSheetsRef && !exam.answerSheetsRef.endDate ? `/exams/${exam.answerSheetsRef.id}`
+          : exam.answerSheetsRef.startDate && !exam.answerSheetsRef.endDate ? `/exams/${exam.answerSheetsRef.id}`
           : `/results`
       }
       className={styles.card}
     >
       <div className={styles.header} style={{ backgroundColor: company.color }}>
         <Image
-          className={styles.logo}
           src={company.logo}
           width={400}
           height={400}
@@ -64,22 +63,22 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
         />
       </div>
       <div className={styles.content}>
-        <h2 className={styles.title}>
+        <h2>
           {exam.title} {exam.subtitle && exam.subtitle}{" "}
           {exam.level && exam.level}
         </h2>
 
-        <span className={styles.company}>{exam.createdByRef.name}</span>
+        <span>{exam.createdByRef.name}</span>
 
         <div className={styles.info}>
-          {!exam.answerSheetsRef ? (
+
+          {!exam.answerSheetsRef?.startDate ? (
             <>
-              <p>Não iniciado</p>
               <p className={styles.deadline}>
-                Restam <Timer expiryTimestamp={submitionLeftTime} />
+                Você tem <Timer expiryTimestamp={submitionLeftTime} /> para enviar suas respostas
               </p>
             </>
-          ) : exam.answerSheetsRef && !exam.answerSheetsRef.endDate ? (
+          ) : exam.answerSheetsRef?.startDate && !exam.answerSheetsRef.endDate ? (
             <>
               <span className={styles.leftTime}>
                 Você tem <Timer expiryTimestamp={examLeftTime} /> para finalizar

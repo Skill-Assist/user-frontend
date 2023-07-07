@@ -89,7 +89,10 @@ const InvitationCard: React.FC<Props> = ({
           {!denied && !expired && (
             <>
               <div className={styles.timer}>
-                <Timer expiryTimestamp={invitationLeftTime} /> <br /> restantes
+                <div>
+                  Faltam <Timer expiryTimestamp={invitationLeftTime} />
+                </div>
+                para seu convite expirar
               </div>
               <div className={styles.actions}>
                 <button

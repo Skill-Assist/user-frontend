@@ -27,6 +27,8 @@ const Intro: React.FC<Props> = ({ examData, userData }: Props) => {
   const close = () => setShowModal(false);
   const open = () => setShowModal(true);
 
+  console.log(examData)
+
   const checkInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();

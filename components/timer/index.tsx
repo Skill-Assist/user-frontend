@@ -18,12 +18,10 @@ const Timer: FC<Props> = ({ expiryTimestamp, onTimeIsOver }: Props) => {
     <>
       {days
         ? days +
-          ` dia${days > 1 ? "s, " : ", "}` +
-          hours +
-          ` hora${hours > 1 ? "s" : ""}` +
+          ` dia${days > 1 ? "s " : " "}` +
           " e " +
-          minutes +
-          ` minuto${minutes > 1 ? "s" : ""}`
+          hours  +
+          ` hora${hours > 1 ? "s" : ""}`
         : null}
 
       {!days && seconds >= 0 && (
