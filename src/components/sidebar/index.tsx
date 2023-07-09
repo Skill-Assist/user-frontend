@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, ReactNode } from "react";
+import { FC } from "react";
 import Link from "next/link";
 
 import styles from "./styles.module.scss";
