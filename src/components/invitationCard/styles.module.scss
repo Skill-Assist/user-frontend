@@ -1,0 +1,218 @@
+.card {
+  width: 350px;
+  height: 280px;
+  padding-bottom: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-black);
+  background-color: var(--neutral-50);
+}
+
+.header {
+  position: relative;
+  display: flex;
+  height: 60px;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  justify-content: center;
+
+  img {
+    display: flex;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 30px;
+    border-radius: 50%;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 40px;
+  width: 100%;
+
+  h2 {
+    font-size: 18px;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
+    text-transform: capitalize;
+  }
+
+  span {
+    font-size: 16px;
+    color: var(--secondary-2);
+    font-weight: bold;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
+  }
+}
+
+
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 20px 10px;
+
+  button {
+    background: var(--primary);
+    color: var(--neutral-0);
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    width: 150px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:first-child {
+      background-color: var(--neutral-50);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+
+      &:hover {
+        background-color: var(--warning);
+        color: var(--neutral-0);
+      }
+    }
+
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+.denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+
+  span {
+    color: var(--warning) !important;
+    text-align: center;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: var(--warning);
+    color: var(--neutral-0);
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+.expired {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+
+  span {
+    color: var(--alert) !important;
+    text-align: center;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: var(--alert);
+    color: var(--neutral-0);
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+.modalContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 20px;
+
+  button {
+    background: var(--warning);
+    color: var(--neutral-0);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 5px 10px;
+    width: 150px;
+    font-size: 16px;
+    transition: 300ms;
+    cursor: pointer;
+
+    &:first-child {
+      background-color: var(--primary);
+    }
+
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.modalText {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.timer {
+  text-align: center;
+  display: flex;
+  width: 60%;
+  gap: 4px;
+  margin: auto;
+  color: var(--secondary-2);
+  justify-content: center;
+  flex-direction: column;
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+}
