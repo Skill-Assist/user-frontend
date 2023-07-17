@@ -22,7 +22,6 @@ interface Props {
   sectionsData: Section[];
   sectionToAnswerSheets: Section2AS[];
   examLeftTimeInSeconds: number;
-  user: any;
 }
 
 const ExamPage: FC<Props> = ({
@@ -50,10 +49,9 @@ const ExamPage: FC<Props> = ({
       router.query.answerSheetId as string
     );
 
-    console.log(response)
     const section2ASId = response.id;
 
-    // router.push(`/exams/${router.query.answerSheetId}/${section2ASId}`);
+    router.push(`/exams/${router.query.answerSheetId}/${section2ASId}`);
   };
 
   const submitHandler = async (e: FormEvent<HTMLFormElement> | null) => {
@@ -239,8 +237,8 @@ export const getServerSideProps: GetServerSideProps = async (
   ).then((res) => res.json());
 
   const termData = {
-    startDate: answerSheetResponse.startDate,
-    durationInHours: answerSheetResponse.__exam__.durationInHours,
+    startDate: answerSheetResponse[0].startDate,
+    durationInHours: answerSheetResponse[0].__exam__.durationInHours,
   };
 
   const startExamDate = new Date(termData.startDate);
@@ -261,11 +259,11 @@ export const getServerSideProps: GetServerSideProps = async (
     };
   }
 
-  const sectionToAnswerSheets = answerSheetResponse.__sectionToAnswerSheets__;
+  const sectionToAnswerSheets = answerSheetResponse[0].__sectionToAnswerSheets__;
 
   return {
     props: {
-      sectionsData: sectionsResponse.__exam__.__sections__,
+      sectionsData: sectionsResponse[0].__exam__.__sections__,
       sectionToAnswerSheets,
       examLeftTimeInSeconds: diff,
     },

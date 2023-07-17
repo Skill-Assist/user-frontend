@@ -71,6 +71,10 @@
   gap: 8px;
   padding: 20px;
   min-height: 160px;
+
+  p, span {
+    color: var(--secondary-2)!important;
+  }
 }
 
 .solution {

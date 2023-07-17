@@ -9,6 +9,8 @@ import {
   AiFillEye,
   AiOutlineReload,
 } from "react-icons/ai";
+import parse from "html-react-parser";
+
 
 import ProgammingQuestion from "@/components/questions/programming";
 import Layout from "@/components/layout";
@@ -228,7 +230,6 @@ const Section: FC<Props> = ({
   const reloadHandler = () => {
     setSectionSpentTime(spentTimeInMinutes);
   };
-  console.log(questions)
 
   return (
     <div
@@ -252,7 +253,7 @@ const Section: FC<Props> = ({
                 <h2 className={styles.title}>Questão</h2>
                 <div className={styles.background}>
                   <div className={styles.questionText}>
-                    <p>{questions[questionIndex].statement}</p>
+                    <p>{parse(questions[questionIndex].statement)}</p>
                   </div>
                 </div>
               </Card>

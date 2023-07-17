@@ -61,7 +61,7 @@ const questionService = {
 
     try {
       const answerResponse = await fetch(
-        `${API_URL}/answer/close-section/${answerId}`,
+        `${API_URL}/answer/closeSection?id=${answerId}`,
         {
           method: "PATCH",
           headers: {

@@ -238,7 +238,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   ).then((res) => res.json());
 
-  
   const invitationResponse = userResponse.invitationsRef.find(
     (invitation: Invitation) => {
       if (invitation.examRef.answerSheetsRef){
