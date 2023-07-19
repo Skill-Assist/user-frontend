@@ -13,7 +13,7 @@ interface Props {
 const MultipleChoiceQuestion: FC<Props> = ({
   options,
   onChange,
-  selectedOption
+  selectedOption,
 }: Props) => {
   if (!options) {
     return null;

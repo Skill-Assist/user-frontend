@@ -1,4 +1,7 @@
-import { keyStrokesProctoring, mouseProctoring } from "@/pages/exams/[answerSheetId]/[section2ASId]";
+import {
+  keyStrokesProctoring,
+  mouseProctoring,
+} from "@/pages/exams/[answerSheetId]/[section2ASId]";
 import axios from "axios";
 import cookie from "react-cookies";
 
@@ -27,20 +30,40 @@ const questionService = {
     }
   },
 
+  getAnswer: async (answerId: number) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+      },
+    };
+    try {
+      const response = await axios.get(
+        `${API_URL}/answer/findOne?key=id&value=${answerId}`,
+        config
+      );
+      return response;
+    } catch (error: any) {
+      return error.response;
+    }
+  },
+
   updateAnswer: async (answerId: number, answerContent: string) => {
     let body = {
       content: answerContent,
     };
 
     try {
-      const answerResponse = await fetch(`${API_URL}/answer/${answerId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${cookie.load("token")}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const answerResponse = await fetch(
+        `${API_URL}/answer/submit?id=${answerId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${cookie.load("token")}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
       return answerResponse;
     } catch (error: any) {
       return error.response;

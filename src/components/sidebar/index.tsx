@@ -1,8 +1,14 @@
 import { FC } from "react";
 import Link from "next/link";
-
-import styles from "./styles.module.scss";
 import Image from "next/image";
+
+import questionService from "@/services/questionService";
+
+import { Question } from "@/types/question";
+import {
+  keyStrokesProctoring,
+  mouseProctoring,
+} from "@/pages/exams/[answerSheetId]/[section2ASId]";
 
 import Logo from "public/images/logo.svg";
 import HomeIcon from "public/icons/home.svg";
@@ -10,14 +16,21 @@ import ExamsIcon from "public/icons/exams.svg";
 import InviteIcon from "public/icons/invite.svg";
 import ResultsIcon from "public/icons/trophy.svg";
 import SupportIcon from "public/icons/support.svg";
-import { Question } from "@/types/question";
+
+import styles from "./styles.module.scss";
 
 type Props = {
   active: number;
   questions?: Question[];
   setQuestionIndex?: (index: number) => void;
+  questionIndex?: number;
   show: boolean;
   setShow: (show: boolean) => void;
+  answer?: string;
+  answersId?: number[];
+  setAnswer?: (answer: string) => void;
+  keyboard?: keyStrokesProctoring;
+  mouseTrack?: mouseProctoring;
 };
 
 const Sidebar: FC<Props> = ({
@@ -26,6 +39,12 @@ const Sidebar: FC<Props> = ({
   setShow,
   questions,
   setQuestionIndex,
+  questionIndex,
+  answer,
+  answersId,
+  setAnswer,
+  keyboard,
+  mouseTrack,
 }: Props) => {
   const navigationItems = [
     {
@@ -55,6 +74,37 @@ const Sidebar: FC<Props> = ({
     },
   ];
 
+  const navigateHandler = async (index: number) => {
+    if (
+      questions &&
+      setQuestionIndex &&
+      answersId &&
+      setAnswer &&
+      keyboard &&
+      mouseTrack
+    ) {
+      if (answer && answer !== "" && questionIndex) {
+        const response = await questionService
+          .updateAnswer(answersId[questionIndex], answer)
+          .then((res) => res.json())
+          .then(() => {
+            setQuestionIndex(index);
+            setAnswer("");
+          });
+      } else if (questionIndex === 0 && answer) {
+        const response = await questionService
+          .updateAnswer(answersId[0], answer)
+          .then((res) => res.json())
+          .then(() => {
+            setQuestionIndex(index);
+            setAnswer("");
+          });
+      } else {
+        setQuestionIndex(index);
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
@@ -71,7 +121,7 @@ const Sidebar: FC<Props> = ({
         {questions && setQuestionIndex
           ? questions.map((item, index) => (
               <button
-                onClick={() => setQuestionIndex(index)}
+                onClick={() => navigateHandler(index)}
                 className={`
                 ${styles.item} 
                 ${active === index ? styles.active : ""} 

@@ -121,7 +121,6 @@ const ExamPage: FC<Props> = ({
                               }
                             : sectionToAnswerSheets[index]?.startDate
                             ? () => {
-                                console.log("ola");
                                 router.push(
                                   `/exams/${router.query.answerSheetId}/${sectionToAnswerSheets[index]?.id}`
                                 );
@@ -259,7 +258,8 @@ export const getServerSideProps: GetServerSideProps = async (
     };
   }
 
-  const sectionToAnswerSheets = answerSheetResponse[0].__sectionToAnswerSheets__;
+  const sectionToAnswerSheets =
+    answerSheetResponse[0].__sectionToAnswerSheets__;
 
   return {
     props: {

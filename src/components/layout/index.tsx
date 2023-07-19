@@ -5,12 +5,19 @@ import Header from "../header";
 
 import styles from "./styles.module.scss";
 import { Question } from "@/types/question";
+import { keyStrokesProctoring, mouseProctoring } from "@/pages/exams/[answerSheetId]/[section2ASId]";
 
 type Props = {
   sidebar?: boolean;
   sidebarClosed?: boolean;
   questions?: Question[];
   setQuestionIndex?: (index: number) => void;
+  questionIndex?: number;
+  answer?: string;
+  answersId?: number[];
+  setAnswer?: (answer: string) => void;
+  keyboard?: keyStrokesProctoring;
+  mouseTrack?: mouseProctoring;
   active: number;
   header?: boolean;
   headerTitle?: string;
@@ -23,6 +30,12 @@ const Layout: FC<Props> = ({
   sidebarClosed,
   questions,
   setQuestionIndex,
+  questionIndex,
+  answer,
+  answersId,
+  setAnswer,
+  keyboard,
+  mouseTrack,
   active,
   header,
   headerTitle,
@@ -40,6 +53,12 @@ const Layout: FC<Props> = ({
           setShow={setShow}
           questions={questions}
           setQuestionIndex={setQuestionIndex}
+          questionIndex={questionIndex}
+          answer={answer}
+          answersId={answersId}
+          setAnswer={setAnswer}
+          keyboard={keyboard}
+          mouseTrack={mouseTrack}
         />
       )}
 

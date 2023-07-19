@@ -11,7 +11,6 @@ import {
 } from "react-icons/ai";
 import parse from "html-react-parser";
 
-
 import ProgammingQuestion from "@/components/questions/programming";
 import Layout from "@/components/layout";
 import Card from "@/components/card";
@@ -127,7 +126,19 @@ const Section: FC<Props> = ({
     setLoadingQuestions(false);
   }, []);
 
-  // console.log(questions)
+  useEffect(() => {
+    const answerId = answersId[questionIndex];
+
+    const fetchAnswer = async () => {
+      const response = await questionService.getAnswer(answerId);
+
+      if (response.status >= 200 && response.status < 300) {
+        setAnswer(response.data.content);
+      }
+    };
+
+    fetchAnswer();
+  }, [questionIndex]);
 
   const handleTextAnswerChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setAnswer(e.target.value);
@@ -157,9 +168,9 @@ const Section: FC<Props> = ({
     switch (questions[questionIndex].type) {
       case "programming":
         return (
-          // <ProgammingQuestion language={questions[questionIndex].language} />
           <ProgammingQuestion
             onChange={(value: string) => handleAnswerChange(value)}
+            defaultAnswer={answer}
           />
         );
 
@@ -176,7 +187,12 @@ const Section: FC<Props> = ({
         );
 
       case "text":
-        return <TextQuestion onChange={handleTextAnswerChange} />;
+        return (
+          <TextQuestion
+            onChange={handleTextAnswerChange}
+            defaultAnswer={answer}
+          />
+        );
     }
   };
 
@@ -193,6 +209,7 @@ const Section: FC<Props> = ({
         .then((res) => res.json())
         .then(() => {
           setQuestionIndex(questionIndex + 1);
+          setAnswer("");
         });
     } else {
       const response = await questionService
@@ -245,6 +262,12 @@ const Section: FC<Props> = ({
         headerTitle="Voltar"
         questions={questions}
         setQuestionIndex={setQuestionIndex}
+        questionIndex={questionIndex}
+        answer={answer}
+        answersId={answersId}
+        setAnswer={setAnswer}
+        keyboard={keyboard}
+        mouseTrack={mouseTrack}
       >
         <div className={styles.question}>
           <div className={styles.standardStructure}>
@@ -297,7 +320,7 @@ const Section: FC<Props> = ({
                           : " --"}
                       </p>
                     </li>
-                    <li>
+                    {/* <li>
                       <AiOutlineClockCircle />
                       <p>
                         Tempo médio por questão de{" "}
@@ -306,13 +329,6 @@ const Section: FC<Props> = ({
                               0
                             ) + "min"
                           : "--:--"}
-                      </p>
-                    </li>
-                    {/* <li>
-                      <BiTimer />
-                      <p>
-                        Previsão de término do teste em{" "}
-                        {showStatistics ? (sectionSpentTime / (questionIndex + 1)) * questions.length : "--:--"}
                       </p>
                     </li> */}
                   </ul>
@@ -380,14 +396,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const diff = 1 * 3600 - timeSpent;
 
-  if (diff <= 0) {
-    return {
-      redirect: {
-        destination: `/exams/${answerSheetId}`,
-        permanent: false,
-      },
-    };
-  }
+  // if (diff <= 0) {
+  //   return {
+  //     redirect: {
+  //       destination: `/exams/${answerSheetId}`,
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: {
