@@ -51,7 +51,7 @@ const InvitationCard: FC<Props> = ({ invitation, denied, expired }: Props) => {
     exam.level && exam.level
   }`;
 
-  let invitationDate = new Date(invitation.createdAt);
+  let invitationDate = new Date(invitation.inviteDate);
   const currentDate = new Date();
 
   const timeSpent = Math.floor(

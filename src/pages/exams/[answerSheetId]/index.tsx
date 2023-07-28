@@ -63,7 +63,7 @@ const ExamPage: FC<Props> = ({
     await examService
       .submitExam(router.query.answerSheetId as string)
       .then(() => {
-        router.push(`/exams`);
+        router.push(`/exams/completion/${router.query.answerSheetId}`);
       });
   };
 

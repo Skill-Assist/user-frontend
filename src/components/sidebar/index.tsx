@@ -86,7 +86,6 @@ const Sidebar: FC<Props> = ({
       if (answer && answer !== "" && questionIndex) {
         const response = await questionService
           .updateAnswer(answersId[questionIndex], answer)
-          .then((res) => res.json())
           .then(() => {
             setQuestionIndex(index);
             setAnswer("");
@@ -94,7 +93,6 @@ const Sidebar: FC<Props> = ({
       } else if (questionIndex === 0 && answer) {
         const response = await questionService
           .updateAnswer(answersId[0], answer)
-          .then((res) => res.json())
           .then(() => {
             setQuestionIndex(index);
             setAnswer("");

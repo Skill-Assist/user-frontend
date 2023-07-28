@@ -1,7 +1,3 @@
-import {
-  keyStrokesProctoring,
-  mouseProctoring,
-} from "@/pages/exams/[answerSheetId]/[section2ASId]";
 import axios from "axios";
 import cookie from "react-cookies";
 
@@ -52,17 +48,53 @@ const questionService = {
       content: answerContent,
     };
 
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+      },
+    };
+
+    console.log("udpate answer body", body)
+
     try {
-      const answerResponse = await fetch(
+      const answerResponse = await axios.patch(
         `${API_URL}/answer/submit?id=${answerId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${cookie.load("token")}`,
-          },
-          body: JSON.stringify(body),
-        }
+        body,
+        config
+      );
+      
+      console.log("udpate answer response", answerResponse)
+
+      return answerResponse;
+    } catch (error: any) {
+      console.log("udpate answer error", error)
+      return error;
+    }
+  },
+
+  updateLastAnswer: async (
+    answerId: number,
+    answerContent: string,
+    keyboard: string,
+    mouse: string
+  ) => {
+    let body = {
+      content: answerContent,
+      keyboard,
+      mouse,
+    };
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+      },
+    };
+
+    try {
+      const answerResponse = await axios.patch(
+        `${API_URL}/answer/submitAndCloseSection?id=${answerId}`,
+        body,
+        config
       );
       return answerResponse;
     } catch (error: any) {
@@ -70,33 +102,48 @@ const questionService = {
     }
   },
 
-  updateLastAnswer: async (
-    answerId: number,
-    answerContent: string,
-    keyboard: keyStrokesProctoring,
-    mouse: mouseProctoring
-  ) => {
-    let body = {
-      content: answerContent,
-      keyboard: [keyboard],
-      mouse: mouse,
+  updateFileAnswer: async (answerId: number, answerBody: FormData) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+      },
     };
 
+    console.log("update file answer body", answerBody)
+
     try {
-      const answerResponse = await fetch(
-        `${API_URL}/answer/closeSection?id=${answerId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${cookie.load("token")}`,
-          },
-          body: JSON.stringify(body),
-        }
+      const response = await axios.patch(
+        `${API_URL}/answer/submit?id=${answerId}`,
+        answerBody,
+        config
       );
-      return answerResponse;
+
+      console.log("update file answer response", response)
+
+      return response;
     } catch (error: any) {
-      return error.response;
+      console.log("update file answer error", error)
+
+      return error;
+    }
+  },
+
+  updateLastFileAnswer: async (answerId: number, answerBody: FormData) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${cookie.load("token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    try {
+      const response = await axios.patch(
+        `${API_URL}/answer/submitAndCloseSection?id=${answerId}`,
+        answerBody,
+        config
+      );
+      return response;
+    } catch (error: any) {
+      return error;
     }
   },
 };

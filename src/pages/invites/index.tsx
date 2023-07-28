@@ -39,7 +39,7 @@ const Invitations: FC = () => {
 
     invitationsResponse.forEach((invitation: Invitation) => {
       let currentDate = new Date();
-      let invitationDate = new Date(invitation.createdAt);
+      let invitationDate = new Date(invitation.inviteDate);
       let deadline =
         invitationDate.getTime() +
         invitation.expirationInHours * 60 * 60 * 1000;
@@ -72,7 +72,7 @@ const Invitations: FC = () => {
           deniedInvitationsData.push(invitation);
         }
       }
-    });
+    })
 
     setCardsRows([
       {

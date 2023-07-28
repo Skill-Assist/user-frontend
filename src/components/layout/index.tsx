@@ -1,11 +1,15 @@
-import { ReactNode, FC, useState } from "react";
+import { ReactNode, FC, useState, useRef, useEffect } from "react";
+import Confetti from "react-confetti";
 
 import Sidebar from "../sidebar";
 import Header from "../header";
 
 import styles from "./styles.module.scss";
 import { Question } from "@/types/question";
-import { keyStrokesProctoring, mouseProctoring } from "@/pages/exams/[answerSheetId]/[section2ASId]";
+import {
+  keyStrokesProctoring,
+  mouseProctoring,
+} from "@/pages/exams/[answerSheetId]/[section2ASId]";
 
 type Props = {
   sidebar?: boolean;
@@ -23,6 +27,7 @@ type Props = {
   headerTitle?: string;
   goBack?: boolean;
   children: ReactNode;
+  confetti?: boolean;
 };
 
 const Layout: FC<Props> = ({
@@ -41,8 +46,23 @@ const Layout: FC<Props> = ({
   headerTitle,
   goBack,
   children,
+  confetti,
 }: Props) => {
   const [show, setShow] = useState(sidebarClosed ? false : true);
+  const [height, setHeight] = useState(null);
+  const [width, setWidth] = useState(null);
+  const confetiRef = useRef(null);
+
+  useEffect(() => {
+    if (confetti) {
+      if (confetiRef.current) {
+        // @ts-ignore
+        setHeight(confetiRef.current?.clientHeight);
+        // @ts-ignore
+        setWidth(confetiRef.current?.clientWidth);
+      }
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -70,8 +90,13 @@ const Layout: FC<Props> = ({
           className={`${!header ? styles.noHeader : styles.withHeader} ${
             styles.content
           }`}
+          ref={confetti ? confetiRef : null}
         >
           {children}
+          {confetti && (
+            // @ts-ignore
+            <Confetti numberOfPieces={150} width={width} height={height} />
+          )}
         </div>
       </div>
     </div>

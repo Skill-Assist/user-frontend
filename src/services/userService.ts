@@ -4,19 +4,11 @@ import cookie from "react-cookies";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = {
-  signin: async (email: string, password: string) => {
-    try {
-      const response = await axios.post(`${API_URL}/auth/signin`, {
-        email,
-        password,
-      });
-
-      cookie.save("token", response.data.access_token, {});
-      return response;
-    } catch (error: any) {
-      return error.response;
-    }
+  logout: () => {
+    cookie.remove("token");
+    window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
   },
+  
   getProfile: async () => {
     let config = {
       headers: {

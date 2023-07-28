@@ -5,7 +5,7 @@ export type Invitation = {
   email: string,
   expirationInHours: number,
   accepted: boolean | null,
-  createdAt: Date
+  inviteDate: Date
   examRef: Exam,
   userRef: number
 };

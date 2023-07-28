@@ -1,36 +1,56 @@
-import { useState, FC } from "react";
+import { useState, FC, ChangeEvent } from "react";
 import Image from "next/image";
 
 import styles from "./styles.module.scss";
 
 type Props = {
-  multiFiles?: boolean;
+  handleChallengeAnswerChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  fileAnswer: File | undefined;
   requiredFiles?: string[];
 };
 
-const ChallengeQuestion: FC<Props> = ({ requiredFiles, multiFiles }: Props) => {
-  const [data, setData] = useState<any>()
-
+const ChallengeQuestion: FC<Props> = ({ requiredFiles, handleChallengeAnswerChange, fileAnswer }: Props) => {
   return (
     <div className={styles.container}>
       {requiredFiles && (
         <div className={styles.files}>
-          <span className={styles.title}>Baixe os seguintes arquivos necessários:</span>
-          {
-            requiredFiles.map((file, index) => {
-              return <a className={styles.requiredFile} href={file} key={index} download>
-                <Image src="/icons/download.svg" alt="download icon" width={20} height={20} />
+          <span className={styles.title}>
+            Baixe os seguintes arquivos necessários:
+          </span>
+          {requiredFiles.map((file, index) => {
+            return (
+              <a
+                className={styles.requiredFile}
+                href={file}
+                key={index}
+                download
+              >
+                <Image
+                  src="/icons/download.svg"
+                  alt="download icon"
+                  width={20}
+                  height={20}
+                />
                 <span>{file}</span>
               </a>
-            })
-          }
+            );
+          })}
         </div>
       )}
       <div className={styles.upload}>
-        <input id="file-upload" type="file" multiple={true} onChange={(e) => setData(e.target.files)} />
-        {
-          data && data.length > 0 ? <label htmlFor="file-upload" className={styles.uploaded}>{data[0].name}</label> : <label htmlFor="file-upload">Upload File</label>
-        }
+        <input
+          id="file-upload"
+          type="file"
+          accept=".zip"
+          onChange={handleChallengeAnswerChange}
+        />
+        {fileAnswer ? (
+          <label htmlFor="file-upload" className={styles.uploaded}>
+            {fileAnswer.name}
+          </label>
+        ) : (
+          <label htmlFor="file-upload">Upload File</label>
+        )}
       </div>
     </div>
   );

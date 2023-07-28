@@ -14,7 +14,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
   const { examRef: exam } = invitation;
   const { createdByRef: company } = exam;
 
-  let humanExamDeadline
+  let humanExamDeadline;
   if (invitation.examRef.answerSheetsRef) {
     let examDeadline = new Date(invitation.examRef.answerSheetsRef?.deadline);
 
@@ -24,8 +24,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
       year: "numeric",
     });
   }
-
-  let submissionDeadline = new Date(invitation.createdAt);
+  let submissionDeadline = new Date(invitation.inviteDate);
 
   submissionDeadline.setSeconds(
     submissionDeadline.getSeconds() +
@@ -38,13 +37,19 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
     year: "numeric",
   });
 
+  const currentDate = new Date();
+
+  const diff = submissionDeadline.getTime() - currentDate.getTime();
+
   return (
     <Link
       href={
-        !exam.answerSheetsRef?.startDate
-          ? `/exams/intro/${exam.answerSheetsRef?.id}`
-          : exam.answerSheetsRef.startDate && !exam.answerSheetsRef.endDate
-          ? `/exams/${exam.answerSheetsRef.id}`
+        diff > 0
+          ? !exam.answerSheetsRef?.startDate
+            ? `/exams/intro/${exam.answerSheetsRef?.id}`
+            : exam.answerSheetsRef.startDate && !exam.answerSheetsRef.endDate
+            ? `/exams/${exam.answerSheetsRef.id}`
+            : `/results`
           : `/results`
       }
       className={styles.card}
@@ -61,21 +66,24 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
         <span>{exam.createdByRef.name}</span>
 
         <div className={styles.info}>
-          {!exam.answerSheetsRef?.startDate ? (
-            <>
-              <p>
-                Você tem até {humanSubmissionDeadline} para enviar suas
-                respostas
-              </p>
-            </>
-          ) : exam.answerSheetsRef?.startDate &&
-            !exam.answerSheetsRef.endDate ? (
-            <>
-              <p>
-                Você tem até {humanExamDeadline} para finalizar
-                seu teste
-              </p>
-            </>
+          {diff > 0 ? (
+            !exam.answerSheetsRef?.startDate ? (
+              <>
+                <p>
+                  Você tem até {humanSubmissionDeadline} para enviar suas
+                  respostas
+                </p>
+              </>
+            ) : exam.answerSheetsRef?.startDate &&
+              !exam.answerSheetsRef.endDate ? (
+              <>
+                <p>Você tem até {humanExamDeadline} para finalizar seu teste</p>
+              </>
+            ) : (
+              <>
+                <p>Finalizado</p>
+              </>
+            )
           ) : (
             <>
               <p>Finalizado</p>

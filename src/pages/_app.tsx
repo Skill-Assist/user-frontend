@@ -7,6 +7,7 @@ import cookies from "react-cookies";
 import userService from "@/services/userService";
 
 import "@/styles/globals.scss";
+import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
       const fetchData = async () => {
         const userResponse = await userService.getProfile();
 
-        if (!userResponse){
+        if (!userResponse) {
           router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
         }
 
@@ -44,7 +45,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" sizes="16x16" href="/static/favicon.svg" />
         <title>SkillAssist</title>
       </Head>
-      {!loading && <Component {...pageProps} />}
+      {!loading && (
+        <>
+          <Component {...pageProps} />
+          <Toaster />
+        </>
+      )}
     </>
   );
 }

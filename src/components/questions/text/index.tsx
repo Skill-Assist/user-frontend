@@ -7,7 +7,7 @@ interface Props {
   defaultAnswer: string;
 }
 
-const TextQuestion: FC<Props> = ({ onChange, defaultAnswer }) => {
+const TextQuestion: FC<Props> = ({ onChange,defaultAnswer }) => {
   return (
     <form className={styles.formContainer}>
       <textarea

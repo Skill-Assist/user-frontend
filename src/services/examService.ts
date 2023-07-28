@@ -105,13 +105,10 @@ const examService = {
       },
     };
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${API_URL}/answer-sheet/submit?id=${answerSheetId}`,
-        {
-          method: "PATCH",
-          headers: config.headers,
-        }
-      ).then((res) => res.json());
+        config
+      );
       return response;
     } catch (error: any) {
       return error.response;

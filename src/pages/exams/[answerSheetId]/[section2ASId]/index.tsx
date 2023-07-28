@@ -25,6 +25,7 @@ import { Question } from "@/types/question";
 import { Section2AS } from "@/types/section2AS";
 
 import styles from "./styles.module.scss";
+import { toast } from "react-hot-toast";
 
 export type Option = {
   [key: string]: string;
@@ -34,6 +35,7 @@ interface Props {
   sectionName: string;
   sectionToAnswerSheet: Section2AS;
   sectionLeftTimeInSeconds: number;
+  answersId: number[];
 }
 
 export type keyStrokesProctoring = {
@@ -50,12 +52,12 @@ export type mouseProctoring = {
 }[];
 
 const Section: FC<Props> = ({
-  sectionToAnswerSheet,
   sectionName,
+  sectionToAnswerSheet,
   sectionLeftTimeInSeconds,
+  answersId,
 }: Props) => {
-  const { answersRef: answersId, startDate: sectionStartDate } =
-    sectionToAnswerSheet;
+  const { startDate: sectionStartDate } = sectionToAnswerSheet;
 
   let startDate = new Date(sectionStartDate);
   let currentDate = new Date();
@@ -78,6 +80,7 @@ const Section: FC<Props> = ({
   const [questions, setQuestions] = useState<Question[]>();
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [answer, setAnswer] = useState("");
+  const [fileAnswer, setFileAnswer] = useState<File>();
   const [sectionSpentTime, setSectionSpentTime] = useState(spentTimeInMinutes);
 
   const [mouseOut, setMouseOut] = useState<Date | null>(null);
@@ -144,6 +147,19 @@ const Section: FC<Props> = ({
     setAnswer(e.target.value);
   };
 
+  const handleChallengeAnswerChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      if (file) {
+        setFileAnswer(file);
+      } else {
+        toast.error("Por favor, selecione um arquivo ZIP válido.");
+      }
+    }
+  };
+
   const handleAnswerChange = (value: string) => {
     setAnswer(value);
   };
@@ -175,7 +191,12 @@ const Section: FC<Props> = ({
         );
 
       case "challenge":
-        return <ChallengeQuestion />;
+        return (
+          <ChallengeQuestion
+            handleChallengeAnswerChange={handleChallengeAnswerChange}
+            fileAnswer={fileAnswer}
+          />
+        );
 
       case "multipleChoice":
         return (
@@ -202,29 +223,6 @@ const Section: FC<Props> = ({
     }
   };
 
-  const submitHandler = async () => {
-    if (questionIndex < questions.length - 1) {
-      const response = await questionService
-        .updateAnswer(answersId[questionIndex], answer)
-        .then((res) => res.json())
-        .then(() => {
-          setQuestionIndex(questionIndex + 1);
-          setAnswer("");
-        });
-    } else {
-      const response = await questionService
-        .updateLastAnswer(
-          answersId[questionIndex],
-          answer,
-          keyboard,
-          mouseTrack
-        )
-        .then(() => {
-          router.push(`/exams/${router.query.answerSheetId}`);
-        });
-    }
-  };
-
   const handleMouseEnter = () => {
     if (mouseOut) {
       let time = new Date();
@@ -248,6 +246,66 @@ const Section: FC<Props> = ({
     setSectionSpentTime(spentTimeInMinutes);
   };
 
+  const submitHandler = async () => {
+    if (questions[questionIndex].type === "challenge") {
+      const formData = new FormData();
+      if (fileAnswer) {
+        const maxSize = 10 * 1024 * 1024;
+        if (fileAnswer.size > maxSize) {
+          toast.error("O tamanho do arquivo não pode exceder 10MB.");
+          return;
+        }
+        formData.append("content", "Archive.zip" as string);
+        formData.append("file", fileAnswer);
+      } else {
+        toast.error("Por favor, selecione um arquivo ZIP válido.");
+        return;
+      }
+      if (questionIndex < questions.length - 1) {
+        const response = await questionService
+          .updateFileAnswer(answersId[questionIndex], formData)
+          .then(() => {
+            setQuestionIndex(questionIndex + 1);
+            setAnswer("");
+          });
+        // console.log("1", response);
+      } else {
+        formData.append("keyboard", JSON.stringify(keyboard) as string);
+        formData.append("mouse", JSON.stringify(mouseTrack) as string);
+
+        const response = await questionService.updateLastFileAnswer(
+          answersId[questionIndex],
+          formData
+        )
+        .then(() => {
+          router.push(`/exams/${router.query.answerSheetId}`);
+        });
+        // console.log("2",response);
+      }
+    } else {
+      if (questionIndex < questions.length - 1) {
+        const response = await questionService
+          .updateAnswer(answersId[questionIndex], answer)
+          .then(() => {
+            setQuestionIndex(questionIndex + 1);
+            setAnswer("");
+          });
+        // console.log("3", response);
+      } else {
+        const response = await questionService.updateLastAnswer(
+          answersId[questionIndex],
+          answer,
+          JSON.stringify(keyboard),
+          JSON.stringify(mouseTrack)
+        )
+        .then(() => {
+        router.push(`/exams/${router.query.answerSheetId}`);
+        });
+        // console.log("4", response);
+      }
+    }
+  };
+
   return (
     <div
       className={styles.section}
@@ -259,7 +317,7 @@ const Section: FC<Props> = ({
         active={questionIndex}
         header
         goBack
-        headerTitle="Voltar"
+        headerTitle={sectionName}
         questions={questions}
         setQuestionIndex={setQuestionIndex}
         questionIndex={questionIndex}
@@ -320,17 +378,6 @@ const Section: FC<Props> = ({
                           : " --"}
                       </p>
                     </li>
-                    {/* <li>
-                      <AiOutlineClockCircle />
-                      <p>
-                        Tempo médio por questão de{" "}
-                        {showStatistics
-                          ? (sectionSpentTime / (questionIndex + 1)).toFixed(
-                              0
-                            ) + "min"
-                          : "--:--"}
-                      </p>
-                    </li> */}
                   </ul>
                 </div>
               </Card>
@@ -376,7 +423,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const section2ASResponse = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
-      `/section-to-answer-sheet/findOne?key=id&value=${section2ASId}&relations=answers,section`,
+      `/section-to-answer-sheet/findOne?key=id&value=${section2ASId}&relations=answers,section&map=true`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -385,7 +432,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   ).then((res) => res.json());
 
-  const sectionName = "Nome padrão";
+  const sectionName = section2ASResponse.__section__.name;
+
+  const answersId = section2ASResponse.__answers__.map(
+    (answer: any) => answer.id
+  );
 
   const startExamDate = new Date(section2ASResponse.startDate);
   const currentDate = new Date();
@@ -394,22 +445,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     (currentDate.getTime() - startExamDate.getTime()) / 1000
   );
 
-  const diff = 1 * 3600 - timeSpent;
+  const diff =
+    section2ASResponse.__section__.durationInHours * 3600 - timeSpent;
 
-  // if (diff <= 0) {
-  //   return {
-  //     redirect: {
-  //       destination: `/exams/${answerSheetId}`,
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (diff <= 0) {
+    return {
+      redirect: {
+        destination: `/exams/${answerSheetId}`,
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {
       sectionName,
       sectionToAnswerSheet: section2ASResponse,
       sectionLeftTimeInSeconds: diff,
+      answersId,
     },
   };
 };
