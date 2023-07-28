@@ -44,7 +44,7 @@ const Intro: FC<Props> = ({ invitationData, userData }: Props) => {
     }
   };
 
-  let deadline = new Date(invitationData.createdAt);
+  let deadline = new Date(invitationData.inviteDate);
 
   deadline.setSeconds(
     deadline.getSeconds() + examData.submissionInHours * 3600
