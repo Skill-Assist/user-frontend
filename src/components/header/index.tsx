@@ -1,14 +1,15 @@
-import { FC, useEffect, useRef, useState, RefObject } from "react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import Image from "next/image";
-import cookies from "react-cookies";
+import { FC, useEffect, useRef, useState, RefObject } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Image from 'next/image';
 
-import { BsPersonCircle } from "react-icons/bs";
-import { BsArrowLeft } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
+import { BsPersonCircle } from 'react-icons/bs';
+import { BsArrowLeft } from 'react-icons/bs';
+import { BiLogOut } from 'react-icons/bi';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
+import { User } from '@/types/user';
+import userService from '@/services/userService';
 
 type Props = {
   title?: string;
@@ -23,15 +24,14 @@ const Header: FC<Props> = ({ goBack, title }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem('skillAssistUser');
     if (user) {
       setUser(JSON.parse(user));
     }
   }, []);
 
   const logout = () => {
-    cookies.remove("token");
-    router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
+    userService.logout();
   };
 
   const useOutsideAlerter = (ref: RefObject<HTMLDivElement>) => {
@@ -42,9 +42,9 @@ const Header: FC<Props> = ({ goBack, title }: Props) => {
         }
       };
 
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
       };
     }, [ref]);
   };
@@ -55,18 +55,21 @@ const Header: FC<Props> = ({ goBack, title }: Props) => {
   return (
     <div className={styles.header}>
       <div className={styles.titleContainer}>
-        {goBack && <BsArrowLeft onClick={() => router.back()} size={36} fill="var(--primary)" />}
+        {goBack && (
+          <BsArrowLeft
+            onClick={() => router.back()}
+            size={36}
+            fill="var(--primary)"
+          />
+        )}
         <h2>{title}</h2>
       </div>
 
-      <div
-        className={styles.profile}
-        ref={wrapperRef}
-      >
+      <div className={styles.profile} ref={wrapperRef}>
         {user && (
           <div className={styles.headerInfo}>
             <p>Olá, </p>
-            <span>{user.name.split(" ")[0]}</span>
+            <span>{user.nickname}</span>
 
             <div
               className={styles.userIcon}
@@ -88,11 +91,7 @@ const Header: FC<Props> = ({ goBack, title }: Props) => {
               <ul>
                 <li className={styles.dropdownItem}>
                   <BsPersonCircle size={25} />
-                  <Link
-                    href="#"
-                  >
-                    Ver Perfil
-                  </Link>
+                  <Link href="/profile">Ver Perfil</Link>
                 </li>
                 <li className={styles.dropdownItem}>
                   <BiLogOut size={25} />

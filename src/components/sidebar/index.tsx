@@ -10,7 +10,7 @@ import {
   mouseProctoring,
 } from "@/pages/exams/[answerSheetId]/[section2ASId]";
 
-import Logo from "public/images/logo.svg";
+import Logo from "public/logo.svg";
 import HomeIcon from "public/icons/home.svg";
 import ExamsIcon from "public/icons/exams.svg";
 import InviteIcon from "public/icons/invite.svg";

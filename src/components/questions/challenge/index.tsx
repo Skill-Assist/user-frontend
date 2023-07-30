@@ -1,7 +1,8 @@
-import { useState, FC, ChangeEvent } from "react";
-import Image from "next/image";
+import { useState, FC, ChangeEvent } from 'react';
+import Image from 'next/image';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
 
 type Props = {
   handleChallengeAnswerChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -9,7 +10,11 @@ type Props = {
   requiredFiles?: string[];
 };
 
-const ChallengeQuestion: FC<Props> = ({ requiredFiles, handleChallengeAnswerChange, fileAnswer }: Props) => {
+const ChallengeQuestion: FC<Props> = ({
+  requiredFiles,
+  handleChallengeAnswerChange,
+  fileAnswer,
+}: Props) => {
   return (
     <div className={styles.container}>
       {requiredFiles && (
@@ -25,11 +30,10 @@ const ChallengeQuestion: FC<Props> = ({ requiredFiles, handleChallengeAnswerChan
                 key={index}
                 download
               >
-                <Image
-                  src="/icons/download.svg"
-                  alt="download icon"
-                  width={20}
-                  height={20}
+                <AiOutlineCloudDownload
+                  fill="var(--secondary-2)"
+                  size={20}
+                  style={{ cursor: 'pointer' }}
                 />
                 <span>{file}</span>
               </a>

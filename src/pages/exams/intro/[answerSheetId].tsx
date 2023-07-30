@@ -12,8 +12,11 @@ import Modal from "@/components/modal";
 
 import examService from "@/services/examService";
 
-import styles from "./styles.module.scss";
+import { User } from "@/types/user";
 import { Invitation } from "@/types/invitation";
+
+
+import styles from "./styles.module.scss";
 
 interface Props {
   invitationData: Invitation;
@@ -64,7 +67,7 @@ const Intro: FC<Props> = ({ invitationData, userData }: Props) => {
             <div className={styles.cardContainer}>
               <div className={styles.imgBx}>
                 <Image
-                  src="/images/logo.svg"
+                  src="/logo.svg"
                   alt="logo"
                   width={50}
                   height={50}

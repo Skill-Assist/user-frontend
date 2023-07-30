@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import cookies from "react-cookies";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import cookies from 'react-cookies';
 
-import userService from "@/services/userService";
+import userService from '@/services/userService';
 
-import "@/styles/globals.scss";
-import { Toaster } from "react-hot-toast";
+import '@/styles/globals.scss';
+import { Toaster } from 'react-hot-toast';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setLoading(true);
 
-    if (!cookies.load("token")) {
+    if (!cookies.load('token')) {
       router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
     } else {
       const fetchData = async () => {
@@ -26,9 +26,11 @@ export default function App({ Component, pageProps }: AppProps) {
           router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
         }
 
-        localStorage.setItem("user", JSON.stringify(userResponse));
+        localStorage.setItem('skillAssistUser', JSON.stringify(userResponse.data));
 
-        if (userResponse.roles.includes("candidate") === false) {
+        console.log(userResponse);
+
+        if (userResponse.data.roles.includes('candidate') === false) {
           router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
         } else {
           setLoading(false);
@@ -42,7 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <link rel="icon" sizes="16x16" href="/static/favicon.svg" />
+        <link rel="icon" sizes="16x16" href="/favicon.svg" />
         <title>SkillAssist</title>
       </Head>
       {!loading && (
