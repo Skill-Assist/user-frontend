@@ -1,10 +1,10 @@
-import { FC } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { FC } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Invitation } from "@/types/invitation";
+import { Invitation } from '@/types/invitation';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 type Props = {
   invitation: Invitation;
@@ -18,10 +18,10 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
   if (invitation.examRef.answerSheetsRef) {
     let examDeadline = new Date(invitation.examRef.answerSheetsRef?.deadline);
 
-    humanExamDeadline = examDeadline.toLocaleString("pt-BR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
+    humanExamDeadline = examDeadline.toLocaleString('pt-BR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
     });
   }
   let submissionDeadline = new Date(invitation.inviteDate);
@@ -31,10 +31,10 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
       invitation.examRef.submissionInHours * 3600
   );
 
-  let humanSubmissionDeadline = submissionDeadline.toLocaleString("pt-BR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  let humanSubmissionDeadline = submissionDeadline.toLocaleString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
   const currentDate = new Date();
@@ -55,15 +55,21 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
       className={styles.card}
     >
       <div className={styles.header}>
-        <Image src={company.logo} width={400} height={400} alt="company photo" />
+        <Image
+          src={company.logo}
+          width={400}
+          height={400}
+          alt="company photo"
+        />
       </div>
       <div className={styles.content}>
-        <h2>
-          {exam.title} {exam.subtitle && exam.subtitle}{" "}
-          {exam.level && exam.level}
-        </h2>
-
-        <span>{company.name}</span>
+        <div className={styles.intro}>
+          <h2>
+            {exam.title} {exam.subtitle && exam.subtitle}{' '}
+            {exam.level && exam.level}
+          </h2>
+          <span>{company.name}</span>
+        </div>
 
         <div className={styles.info}>
           {diff > 0 ? (

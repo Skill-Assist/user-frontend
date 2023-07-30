@@ -35,14 +35,14 @@ const Intro = () => {
 
   useEffect(() => {
     const localStorageUser = localStorage.getItem('skillAssistUser');
-    const user = JSON.parse(localStorageUser as string);
-    const { answerSheetId } = router.query;
+    const parsedUser = JSON.parse(localStorageUser as string);
+    const answerSheetId = router.query.answerSheetId as string;
 
-    if (user) {
-      setUser(user);
+    if (parsedUser) {
+      setUser(parsedUser);
 
-      if (user.invitationsRef && answerSheetId) {
-        const invitationResponse = user.invitationsRef.find(
+      if (parsedUser.invitationsRef && answerSheetId) {
+        const invitationResponse = parsedUser.invitationsRef.find(
           (invitation: Invitation) => {
             if (invitation.examRef.answerSheetsRef) {
               return invitation.examRef.answerSheetsRef.id === +answerSheetId;
@@ -55,12 +55,11 @@ const Intro = () => {
         if (invitationResponse) {
           setInvitationData(invitationResponse);
           setExamData(invitationResponse.examRef);
+          setPageLoading(false);
         }
       }
-
-      setPageLoading(false);
     }
-  }, []);
+  }, [router]);
 
   if (pageLoading) {
     return (
@@ -78,12 +77,11 @@ const Intro = () => {
       </div>
     );
   } else if (!user || !invitationData || !examData) {
-    cookie.remove('token');
-    toast.error('Sua sessão expirou. Faça login novamente', {
-      icon: '⏱️',
+    toast.error('Erro em buscar os dados, tente novamente', {
+      duration: 4000,
     });
     setTimeout(() => {
-      window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+      router.push('/exams');
     }, 2000);
     return;
   } else {
@@ -92,12 +90,12 @@ const Intro = () => {
 
       setLoading(true);
 
-      if (examData.answerSheetsRef) {
+      if (examData.answerSheetsRef && examData.answerSheetsRef.id) {
         const response = await examService.startExam(
           examData.answerSheetsRef.id
         );
 
-        router.push(`/exams/${response.id}`);
+        router.push(`/exams/${response.data.id}`);
       }
     };
 

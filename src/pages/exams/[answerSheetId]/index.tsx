@@ -89,7 +89,7 @@ const ExamPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [router]);
 
   if (pageLoading) {
     return (
@@ -111,12 +111,11 @@ const ExamPage = () => {
     !sectionToAnswerSheets ||
     !examLeftTimeInSeconds
   ) {
-    cookie.remove('token');
-    toast.error('Sua sessão expirou. Faça login novamente', {
-      icon: '⏱️',
+    toast.error('Erro em buscar os dados, tente novamente', {
+      duration: 4000,
     });
     setTimeout(() => {
-      window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+      router.push('/exams');
     }, 2000);
     return;
   } else {

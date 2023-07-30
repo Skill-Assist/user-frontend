@@ -123,10 +123,6 @@ const Home = () => {
               Seja muito bem vindo(a) à <span>Skill Assist</span>
             </h2>
             <div>
-              <button>
-                <AiOutlinePlus />
-                <Link href={'/exams/create'}>Criar novo exame</Link>
-              </button>
               <button
                 onClick={() => {
                   toast.loading('Feature em desenvolvimento', {
