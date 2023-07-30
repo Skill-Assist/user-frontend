@@ -1,6 +1,5 @@
 .card {
-  min-width: 350px;
-  max-width: 400px;
+  width: 350px;;
   margin: auto;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow-black);
@@ -19,6 +18,7 @@
   border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius);
   justify-content: center;
+  background: linear-gradient(-90deg, var(--primary) 0%, var(--primary-2) 100%);
 
   img {
     display: flex;

@@ -1,6 +1,7 @@
-import { Invitation } from "@/types/invitation";
-import axios from "axios";
-import cookie from "react-cookies";
+import { Invitation } from '@/types/invitation';
+import axios from 'axios';
+import cookie from 'react-cookies';
+import { toast } from 'react-hot-toast';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -8,7 +9,7 @@ const examService = {
   getExams: async () => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
@@ -27,7 +28,7 @@ const examService = {
   getInvitations: async () => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
@@ -41,19 +42,28 @@ const examService = {
   acceptInvitation: async (invitationId: number) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${API_URL}/user/acceptInvitation?invitationId=${invitationId}`,
-        {
-          method: "GET",
-          headers: config.headers,
-        }
-      ).then((res) => res.json());
+        config
+      );
       return response;
     } catch (error: any) {
+      const statusCode = error.response.data.statusCode;
+      const message = error.response.data.message;
+
+      if (statusCode === 418 || message.includes('Invalid token')) {
+        cookie.remove('token');
+        toast.error('Sua sessão expirou. Faça login novamente', {
+          icon: '⏱️',
+        });
+        setTimeout(() => {
+          window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+        }, 2000);
+      }
       return error.response;
     }
   },
@@ -61,19 +71,28 @@ const examService = {
   denyInvitation: async (invitationId: number) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${API_URL}/user/rejectInvitation?invitationId=${invitationId}`,
-        {
-          method: "GET",
-          headers: config.headers,
-        }
-      ).then((res) => res.json());
+        config
+      );
       return response;
     } catch (error: any) {
+      const statusCode = error.response.data.statusCode;
+      const message = error.response.data.message;
+
+      if (statusCode === 418 || message.includes('Invalid token')) {
+        cookie.remove('token');
+        toast.error('Sua sessão expirou. Faça login novamente', {
+          icon: '⏱️',
+        });
+        setTimeout(() => {
+          window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+        }, 2000);
+      }
       return error.response;
     }
   },
@@ -81,19 +100,28 @@ const examService = {
   startExam: async (answerSheetId: number) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${API_URL}/answer-sheet/start?id=${answerSheetId}`,
-        {
-          method: "GET",
-          headers: config.headers,
-        }
-      ).then((res) => res.json());
+        config
+      );
       return response;
     } catch (error: any) {
+      const statusCode = error.response.data.statusCode;
+      const message = error.response.data.message;
+
+      if (statusCode === 418 || message.includes('Invalid token')) {
+        cookie.remove('token');
+        toast.error('Sua sessão expirou. Faça login novamente', {
+          icon: '⏱️',
+        });
+        setTimeout(() => {
+          window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+        }, 2000);
+      }
       return error.response;
     }
   },
@@ -101,7 +129,7 @@ const examService = {
   submitExam: async (answerSheetId: string) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
@@ -118,19 +146,28 @@ const examService = {
   startSection: async (sectionId: number, answerSheetId: string) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${cookie.load("token")}`,
+        Authorization: `Bearer ${cookie.load('token')}`,
       },
     };
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${API_URL}/section-to-answer-sheet/batch-answer?sectionId=${sectionId}&answerSheetId=${answerSheetId}`,
-        {
-          method: "POST",
-          headers: config.headers,
-        }
-      ).then((res) => res.json());
+        config
+      );
       return response;
     } catch (error: any) {
+      const statusCode = error.response.data.statusCode;
+      const message = error.response.data.message;
+
+      if (statusCode === 418 || message.includes('Invalid token')) {
+        cookie.remove('token');
+        toast.error('Sua sessão expirou. Faça login novamente', {
+          icon: '⏱️',
+        });
+        setTimeout(() => {
+          window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+        }, 2000);
+      }
       return error.response;
     }
   },

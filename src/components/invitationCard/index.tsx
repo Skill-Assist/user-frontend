@@ -69,7 +69,6 @@ const InvitationCard: FC<Props> = ({ invitation, denied, expired }: Props) => {
       <div className={styles.card}>
         <div
           className={styles.header}
-          style={{ backgroundColor: company.color }}
         >
           <Image
             className={styles.logo}

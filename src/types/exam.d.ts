@@ -13,7 +13,7 @@ export type Exam = {
   showScore: boolean,
   isPublic: boolean,
   status: "live" | "archived" | "draft",
-  createdByRef?: User
+  createdByRef: User
   answerSheetsRef?: AnswerSheet
   __sections__?: Section[]
 };

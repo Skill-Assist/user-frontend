@@ -22,7 +22,7 @@ const CompletionPage: FC<Props> = ({ showScore }: Props) => {
   const { View } = useLottie(options);
 
   return (
-    <Layout header sidebar sidebarClosed active={1} confetti>
+    <Layout header sidebar sidebarClosed active={1}>
       <div className={styles.container}>
         <div className={styles.successContainer}>{View}</div>
         <h1>Meus parabéns, você concluiu o exame com sucesso!</h1>
