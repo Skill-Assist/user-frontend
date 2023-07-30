@@ -102,6 +102,7 @@ const Profile = () => {
         goBack
         headerTitle="Profile"
         contentClassName={styles.p0}
+        active={10}
       >
         <header className={styles.header}>
           <div className={styles.bannner} />

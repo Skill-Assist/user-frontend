@@ -28,6 +28,7 @@ type Props = {
   headerTitle?: string;
   goBack?: boolean;
   children: ReactNode;
+  contentClassName?: string;
 };
 
 const Layout: FC<Props> = ({
@@ -46,6 +47,7 @@ const Layout: FC<Props> = ({
   headerTitle,
   goBack,
   children,
+  contentClassName
 }: Props) => {
   const [show, setShow] = useState(sidebarClosed ? false : true);
 
@@ -74,7 +76,7 @@ const Layout: FC<Props> = ({
         <div
           className={`${!header ? styles.noHeader : styles.withHeader} ${
             styles.content
-          }`}
+          } ${contentClassName ? contentClassName : {}}`}
         >
           {children}
         </div>
