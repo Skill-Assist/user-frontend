@@ -1,10 +1,10 @@
 import { FC } from "react";
-
-import styles from "./styles.module.scss";
 import Image from "next/image";
 import Link from "next/link";
+
 import { Invitation } from "@/types/invitation";
-import Timer from "../timer";
+
+import styles from "./styles.module.scss";
 
 type Props = {
   invitation: Invitation;
@@ -54,8 +54,8 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
       }
       className={styles.card}
     >
-      <div className={styles.header} style={{ backgroundColor: company.color }}>
-        <Image src={company.logo} width={400} height={400} alt="company name" />
+      <div className={styles.header}>
+        <Image src={company.logo} width={400} height={400} alt="company photo" />
       </div>
       <div className={styles.content}>
         <h2>
@@ -63,7 +63,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
           {exam.level && exam.level}
         </h2>
 
-        <span>{exam.createdByRef.name}</span>
+        <span>{company.name}</span>
 
         <div className={styles.info}>
           {diff > 0 ? (
@@ -81,7 +81,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
               </>
             ) : (
               <>
-                <p>Finalizado</p>
+                <p>Teste finalizado</p>
               </>
             )
           ) : (
