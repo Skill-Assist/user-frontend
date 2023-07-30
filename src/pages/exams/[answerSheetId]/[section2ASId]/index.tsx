@@ -3,7 +3,7 @@ import cookie from 'react-cookies';
 import { useRouter } from 'next/router';
 import { FaHourglassHalf } from 'react-icons/fa';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { AiFillEyeInvisible, AiFillEye, AiOutlineReload } from 'react-icons/ai';
+import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import parse from 'html-react-parser';
 
 import ProgammingQuestion from '@/components/questions/programming';
@@ -51,8 +51,6 @@ const Section = () => {
   const [answersId, setAnswersId] = useState<number[]>();
   const router = useRouter();
 
-  const [sectionStartDate, setSectionStartDate] = useState('');
-
   const fetchInitialData = async () => {
     const { answerSheetId, section2ASId } = router.query;
 
@@ -65,7 +63,6 @@ const Section = () => {
       if (section2ASResponse.status >= 200 && section2ASResponse.status < 300) {
         setSectionToAnswerSheet(section2ASResponse.data);
         setSectionsName(section2ASResponse.data.__section__.name);
-        setSectionStartDate(section2ASResponse.data.startDate);
 
         const answersIdData = section2ASResponse.data.__answers__.map(
           (answer: any) => answer.id
@@ -97,17 +94,18 @@ const Section = () => {
         }
       }
     }
+    setLoadingQuestions(false);
     setPageLoading(false);
   };
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [router]);
 
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showStatistics, setShowStatistics] = useState(true);
   const [questions, setQuestions] = useState<Question[]>();
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [answer, setAnswer] = useState('');
   const [fileAnswer, setFileAnswer] = useState<File>();
 
@@ -159,7 +157,7 @@ const Section = () => {
     fetchAnswer();
   }, [questionIndex]);
 
-  if (pageLoading) {
+  if (pageLoading || loadingQuestions) {
     return (
       <div className="loadingContainer">
         <TailSpin
@@ -180,23 +178,14 @@ const Section = () => {
     !sectionLeftTimeInSeconds ||
     !answersId
   ) {
-    toast.error('Erro em buscar os dados, tente novamente', {
-      duration: 4000,
-    });
-    setTimeout(() => {
-      router.push('/exams');
-    }, 2000);
-    return;
+    // toast.error('Erro em buscar os dados, tente novamente', {
+    //   duration: 4000,
+    // });
+    // setTimeout(() => {
+    //   router.push('/exams');
+    // }, 2000);
     return;
   } else {
-    let startDate = new Date(sectionStartDate);
-    let currentDate = new Date();
-
-    let spentTime = currentDate.getTime() - startDate.getTime();
-
-    let spentTimeInSeconds = Math.floor(spentTime / 1000);
-    let spentTimeInMinutes = Math.floor(spentTimeInSeconds / 60);
-
     let sectionLeftTime: Date = new Date();
 
     if (sectionLeftTimeInSeconds) {

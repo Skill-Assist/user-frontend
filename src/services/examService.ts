@@ -144,17 +144,19 @@ const examService = {
   },
 
   startSection: async (sectionId: number, answerSheetId: string) => {
-    let config = {
-      headers: {
-        Authorization: `Bearer ${cookie.load('token')}`,
-      },
-    };
     try {
-      const response = await axios.post(
+      const response = await fetch(
         `${API_URL}/section-to-answer-sheet/batch-answer?sectionId=${sectionId}&answerSheetId=${answerSheetId}`,
-        config
-      );
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${cookie.load('token')}`,
+          },
+        }
+      ).then((res) => res.json());
+
       return response;
+
     } catch (error: any) {
       const statusCode = error.response.data.statusCode;
       const message = error.response.data.message;
@@ -168,9 +170,6 @@ const examService = {
           window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
         }, 2000);
       }
-
-      console.log(error)
-
       return error.response;
     }
   },
