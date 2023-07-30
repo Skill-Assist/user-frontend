@@ -1,3 +1,5 @@
+import { Invitation } from "./invitation";
+
 export type User = {
   id: number,
   name: string,
@@ -9,4 +11,5 @@ export type User = {
   logo: string,
   color: string,
   ownedQuestions?: string[]
+  invitationsRef?: Invitation[]
 };

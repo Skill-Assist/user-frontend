@@ -54,8 +54,6 @@ const questionService = {
       },
     };
 
-    console.log("udpate answer body", body)
-
     try {
       const answerResponse = await axios.patch(
         `${API_URL}/answer/submit?id=${answerId}`,

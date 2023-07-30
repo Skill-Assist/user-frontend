@@ -168,6 +168,9 @@ const examService = {
           window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
         }, 2000);
       }
+
+      console.log(error)
+
       return error.response;
     }
   },

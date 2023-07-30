@@ -1,30 +1,28 @@
-import { FormEvent, useRef, useState, FC } from "react";
-import { GetServerSideProps } from "next";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { AnimatePresence } from "framer-motion";
-import { TailSpin } from "react-loader-spinner";
-import { BsArrowLeft } from "react-icons/bs";
+import { FormEvent, useRef, useState, useEffect } from 'react';
+import cookie from 'react-cookies';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { AnimatePresence } from 'framer-motion';
+import { TailSpin } from 'react-loader-spinner';
+import { BsArrowLeft } from 'react-icons/bs';
 
-import Card from "@/components/card";
-import Button from "@/components/button";
-import Modal from "@/components/modal";
+import Card from '@/components/card';
+import Button from '@/components/button';
+import Modal from '@/components/modal';
 
-import examService from "@/services/examService";
+import examService from '@/services/examService';
 
-import { User } from "@/types/user";
-import { Invitation } from "@/types/invitation";
+import { User } from '@/types/user';
+import { Invitation } from '@/types/invitation';
 
+import styles from './styles.module.scss';
+import { toast } from 'react-hot-toast';
 
-import styles from "./styles.module.scss";
-
-interface Props {
-  invitationData: Invitation;
-  userData: User;
-}
-
-const Intro: FC<Props> = ({ invitationData, userData }: Props) => {
-  const { examRef: examData } = invitationData;
+const Intro = () => {
+  const [pageLoading, setPageLoading] = useState(true);
+  const [user, setUser] = useState<User>();
+  const [invitationData, setInvitationData] = useState<Invitation>();
+  const [examData, setExamData] = useState(invitationData?.examRef);
   const [isAgree, setIsAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -35,237 +33,247 @@ const Intro: FC<Props> = ({ invitationData, userData }: Props) => {
 
   const router = useRouter();
 
-  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  useEffect(() => {
+    const localStorageUser = localStorage.getItem('skillAssistUser');
+    const user = JSON.parse(localStorageUser as string);
+    const { answerSheetId } = router.query;
 
-    setLoading(true);
+    if (user) {
+      setUser(user);
 
-    if(examData.answerSheetsRef){
-      const response = await examService.startExam(examData.answerSheetsRef.id);
+      if (user.invitationsRef && answerSheetId) {
+        const invitationResponse = user.invitationsRef.find(
+          (invitation: Invitation) => {
+            if (invitation.examRef.answerSheetsRef) {
+              return invitation.examRef.answerSheetsRef.id === +answerSheetId;
+            } else {
+              return false;
+            }
+          }
+        );
 
-      router.push(`/exams/${response.id}`);
+        if (invitationResponse) {
+          setInvitationData(invitationResponse);
+          setExamData(invitationResponse.examRef);
+        }
+      }
+
+      setPageLoading(false);
     }
-  };
+  }, []);
 
-  let deadline = new Date(invitationData.inviteDate);
-
-  deadline.setSeconds(
-    deadline.getSeconds() + examData.submissionInHours * 3600
-  );
-
-  let humanDeadline = deadline.toLocaleString("pt-BR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.cardWrapper}>
-          <Card>
-            <div className={styles.cardContainer}>
-              <div className={styles.imgBx}>
-                <Image
-                  src="/logo.svg"
-                  alt="logo"
-                  width={50}
-                  height={50}
-                />
-              </div>
-              <div className={styles.contentBx}>
-                <span>Olá, </span>
-                <span className={styles.user}>{userData.name}</span>
-                <h1>
-                  {examData.title + "\n"}
-                  {examData.subtitle && examData.subtitle + "\n"}
-                  {examData.level && examData.level}
-                </h1>
-              </div>
-              <div className={styles.testInfos}>
-                <p>
-                  Deadline: {humanDeadline}
-                </p>
-                <div>
-                  {examData.durationInHours && (
-                    <p>
-                      Duração: {examData.durationInHours}{" "}
-                      {examData.durationInHours > 1 ? "horas" : "hora"}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <div className={styles.introContainer}>
-          <div className={styles.back}>
-            <BsArrowLeft
-              fill="var(--primary)"
-              size={35}
-              onClick={() => router.back()}
-            />
-          </div>
-          <div className={styles.contentContainer}>
-            <div className={styles.contentText}>
-              <h1>Instruções</h1>
-              <ol>
-                <li>
-                  Seu teste será cronometrado a partir do momento em que o teste
-                  for iniciado.
-                </li>
-                <li>
-                  Certifique-se de ter uma conexão de internet estável e um
-                  local apropriado para o teste.
-                </li>
-                <li>
-                  Siga as orientações de cada questão e baixe os materiais
-                  necessários, se disponível.
-                </li>
-                <li>
-                  O sistema não permitirá submissões após o término do tempo
-                  disponível.
-                </li>
-                <li>
-                  Após submeter seu teste, certifique-se de ter recebido o email
-                  de confirmação.
-                </li>
-                <li>
-                  Seus dados são encriptados para segurança e proteção das
-                  informações.
-                </li>
-                <li>
-                  Em caso de dificuldades técnicas, não deixe de acionar o
-                  suporte.
-                </li>
-              </ol>
-            </div>
-            <form className={styles.form} onSubmit={submitHandler} id="intro">
-              <div className={styles.field}>
-                <input
-                  onChange={() => {
-                    setIsAgree(!isAgree);
-                  }}
-                  type="checkbox"
-                  id="agree"
-                  ref={checkInputRef}
-                />
-                <label htmlFor="agree">
-                  Permito o acesso e monitoramento do teclado, mouse, câmera e
-                  microfone do meu dispositivo durante a realização do teste.
-                  Essas informações serão usadas apenas para garantir a
-                  integridade do processo seletivo e será mantida de modo
-                  confidencial e seguro, de acordo com a nossa Política de
-                  Privacidade.
-                </label>
-              </div>
-
-              <Button
-                disabled={!isAgree}
-                text="Iniciar teste"
-                type="start"
-                onClick={() => (showModal ? close() : open())}
-              />
-            </form>
-          </div>
-        </div>
+  if (pageLoading) {
+    return (
+      <div className="loadingContainer">
+        <TailSpin
+          height="80"
+          width="80"
+          color="#4fa94d"
+          ariaLabel="tail-spin-loading"
+          radius="1"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
       </div>
-      <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-        {showModal && (
-          <Modal
-            handleClose={close}
-            dimensions={{
-              height: "200px",
-              width: "600px",
-            }}
-          >
-            <div className={styles.modalContainer}>
-              {loading ? (
-                <div className={styles.loadingContainer}>
-                  <TailSpin
-                    height="80"
-                    width="80"
-                    color="#4fa94d"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                  />
+    );
+  } else if (!user || !invitationData || !examData) {
+    cookie.remove('token');
+    toast.error('Sua sessão expirou. Faça login novamente', {
+      icon: '⏱️',
+    });
+    setTimeout(() => {
+      window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
+    }, 2000);
+    return;
+  } else {
+    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      setLoading(true);
+
+      if (examData.answerSheetsRef) {
+        const response = await examService.startExam(
+          examData.answerSheetsRef.id
+        );
+
+        router.push(`/exams/${response.id}`);
+      }
+    };
+
+    let deadline = new Date(invitationData.inviteDate);
+
+    deadline.setSeconds(
+      deadline.getSeconds() + examData.submissionInHours * 3600
+    );
+
+    let humanDeadline = deadline.toLocaleString('pt-BR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
+    return (
+      <>
+        <div className={styles.container}>
+          <div className={styles.cardWrapper}>
+            <Card>
+              <div className={styles.cardContainer}>
+                <div className={styles.imgBx}>
+                  <Image src="/logo.svg" alt="logo" width={50} height={50} />
                 </div>
-              ) : (
-                <>
-                  <h1>Atenção!</h1>
-                  <p>
-                    Você não poderá voltar para esta página após finalizar o
-                    teste. Deseja continuar?
-                  </p>
-                  <div className={styles.buttons}>
-                    <Button
-                      text="Cancelar"
-                      type="cancel"
-                      onClick={() => close()}
-                    />
-                    <Button
-                      text="Iniciar teste"
-                      type="start"
-                      form="intro"
-                      submit={true}
+                <div className={styles.contentBx}>
+                  <span>Olá, </span>
+                  <span className={styles.user}>{user.name}</span>
+                  <h1>
+                    {examData.title + '\n'}
+                    {examData.subtitle && examData.subtitle + '\n'}
+                    {examData.level && examData.level}
+                  </h1>
+                </div>
+                <div className={styles.testInfos}>
+                  <p>Deadline: {humanDeadline}</p>
+                  <div>
+                    {examData.durationInHours && (
+                      <p>
+                        Duração: {examData.durationInHours}{' '}
+                        {examData.durationInHours > 1 ? 'horas' : 'hora'}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className={styles.introContainer}>
+            <div className={styles.back}>
+              <BsArrowLeft
+                fill="var(--primary)"
+                size={35}
+                onClick={() => router.back()}
+              />
+            </div>
+            <div className={styles.contentContainer}>
+              <div className={styles.contentText}>
+                <h1>Instruções</h1>
+                <ol>
+                  <li>
+                    Seu teste será cronometrado a partir do momento em que o
+                    teste for iniciado.
+                  </li>
+                  <li>
+                    Certifique-se de ter uma conexão de internet estável e um
+                    local apropriado para o teste.
+                  </li>
+                  <li>
+                    Siga as orientações de cada questão e baixe os materiais
+                    necessários, se disponível.
+                  </li>
+                  <li>
+                    O sistema não permitirá submissões após o término do tempo
+                    disponível.
+                  </li>
+                  <li>
+                    Após submeter seu teste, certifique-se de ter recebido o
+                    email de confirmação.
+                  </li>
+                  <li>
+                    Seus dados são encriptados para segurança e proteção das
+                    informações.
+                  </li>
+                  <li>
+                    Em caso de dificuldades técnicas, não deixe de acionar o
+                    suporte.
+                  </li>
+                </ol>
+              </div>
+              <form className={styles.form} onSubmit={submitHandler} id="intro">
+                <div className={styles.field}>
+                  <input
+                    onChange={() => {
+                      setIsAgree(!isAgree);
+                    }}
+                    type="checkbox"
+                    id="agree"
+                    ref={checkInputRef}
+                  />
+                  <label htmlFor="agree">
+                    Permito o acesso e monitoramento do teclado, mouse, câmera e
+                    microfone do meu dispositivo durante a realização do teste.
+                    Essas informações serão usadas apenas para garantir a
+                    integridade do processo seletivo e será mantida de modo
+                    confidencial e seguro, de acordo com a nossa Política de
+                    Privacidade.
+                  </label>
+                </div>
+
+                <Button
+                  disabled={!isAgree}
+                  text="Iniciar teste"
+                  type="start"
+                  onClick={() => (showModal ? close() : open())}
+                />
+              </form>
+            </div>
+          </div>
+        </div>
+        <AnimatePresence
+          initial={false}
+          mode="wait"
+          onExitComplete={() => null}
+        >
+          {showModal && (
+            <Modal
+              handleClose={close}
+              dimensions={{
+                height: '200px',
+                width: '600px',
+              }}
+            >
+              <div className={styles.modalContainer}>
+                {loading ? (
+                  <div className={styles.loadingContainer}>
+                    <TailSpin
+                      height="80"
+                      width="80"
+                      color="#4fa94d"
+                      ariaLabel="tail-spin-loading"
+                      radius="1"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
                     />
                   </div>
-                </>
-              )}
-            </div>
-          </Modal>
-        )}
-      </AnimatePresence>
-    </>
-  );
+                ) : (
+                  <>
+                    <h1>Atenção!</h1>
+                    <p>
+                      Você não poderá voltar para esta página após finalizar o
+                      teste. Deseja continuar?
+                    </p>
+                    <div className={styles.buttons}>
+                      <Button
+                        text="Cancelar"
+                        type="cancel"
+                        onClick={() => close()}
+                      />
+                      <Button
+                        text="Iniciar teste"
+                        type="start"
+                        form="intro"
+                        submit={true}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            </Modal>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  }
 };
 
 export default Intro;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { token } = ctx.req.cookies;
-
-  const { answerSheetId } = ctx.params as { answerSheetId: string };
-
-  const userResponse = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + `/user/profile`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  ).then((res) => res.json());
-
-  const invitationResponse = userResponse.invitationsRef.find(
-    (invitation: Invitation) => {
-      if (invitation.examRef.answerSheetsRef){
-        return invitation.examRef.answerSheetsRef.id === +answerSheetId;
-      } else {
-        return false
-      }
-    }
-  );
-
-  if(invitationResponse.examRef.answerSheetsRef.startDate){
-    return {
-      redirect: {
-        destination: `/exams/${invitationResponse.examRef.answerSheetsRef.id}`,
-        permanent: false,
-      },
-    };
-  }
-
-
-
-  return {
-    props: {
-      invitationData: invitationResponse,
-      userData: userResponse,
-    },
-  };
-};

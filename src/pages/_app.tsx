@@ -28,8 +28,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
         localStorage.setItem('skillAssistUser', JSON.stringify(userResponse.data));
 
-        console.log(userResponse);
-
         if (userResponse.data.roles.includes('candidate') === false) {
           router.push(`${process.env.NEXT_PUBLIC_LOGIN_URL}`);
         } else {
