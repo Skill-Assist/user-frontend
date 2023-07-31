@@ -25,7 +25,7 @@ const ReportPage = () => {
       const answerSheetResponse = await examService.getAnswerSheet(
         answerSheetId
       );
-
+ 
       if (
         answerSheetResponse.status >= 200 &&
         answerSheetResponse.status < 300
@@ -59,7 +59,7 @@ const ReportPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [router]);
 
   const toggleSection = (index: number) => {
     setSections(
