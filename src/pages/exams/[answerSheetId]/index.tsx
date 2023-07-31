@@ -19,6 +19,7 @@ import examService from '@/services/examService';
 import styles from './styles.module.scss';
 import answerSheetService from '@/services/answerSheetService';
 import { toast } from 'react-hot-toast';
+import sectionToAnswerSheetService from '@/services/sectionToAnswerSheetService';
 
 const ExamPage = () => {
   const [pageLoading, setPageLoading] = useState(true);
@@ -43,12 +44,15 @@ const ExamPage = () => {
         answerSheetId as string
       );
 
-      if (answerSheetResponse.status >= 200 && answerSheetResponse.status < 300) {
+      if (
+        answerSheetResponse.status >= 200 &&
+        answerSheetResponse.status < 300
+      ) {
         setSectionToAnswerSheets(
           answerSheetResponse.data[0].__sectionToAnswerSheets__
         );
       }
- 
+
       const sectionsResponse =
         await answerSheetService.getSectionsFromAnswerSheet(
           answerSheetId as string
@@ -129,7 +133,7 @@ const ExamPage = () => {
 
     const startSectionHandler = async (sectionId: number) => {
       setLoading(true);
-      
+
       const response = await examService.startSection(
         sectionId,
         router.query.answerSheetId as string
@@ -153,12 +157,131 @@ const ExamPage = () => {
         });
     };
 
+    const getButtonText = async (
+      section: Section,
+      sectionToAnswerSheets: Section2AS[]
+    ): Promise<string> => {
+      const sectionToAnswerSheetRequests = sectionToAnswerSheets.map(
+        async (s) => {
+          const response =
+            await sectionToAnswerSheetService.getOneSectionToAnswerSheet(s.id);
+
+          if (response.status >= 200 && response.status < 300) {
+            if (response.data.sectionRef === section.id) {
+              return response.data;
+            }
+          } else {
+            return null;
+          }
+        }
+      );
+
+      const sectionToAnswerSheetResponses = (
+        await Promise.all(sectionToAnswerSheetRequests)
+      );
+
+      const sectionToAnswerSheetResponse = sectionToAnswerSheetResponses.filter(
+        (s) => s !== undefined
+      )[0]
+
+      if (!sectionToAnswerSheetResponse) {
+        return Promise.resolve('Resolver');
+      } else if (sectionToAnswerSheetResponse.endDate) {
+        return Promise.resolve('Finalizado');
+      } else if (sectionToAnswerSheetResponse.startDate) {
+        return Promise.resolve('Continuar');
+      } else {
+        return Promise.resolve('Resolver');
+      }
+    };
+
+    const getButtonType = async (
+      section: Section,
+      sectionToAnswerSheets: Section2AS[]
+    ): Promise<string> => {
+      const sectionToAnswerSheetRequests = sectionToAnswerSheets.map(
+        async (s) => {
+          const response =
+            await sectionToAnswerSheetService.getOneSectionToAnswerSheet(s.id);
+
+          if (response.status >= 200 && response.status < 300) {
+            if (response.data.sectionRef === section.id) {
+              return response.data;
+            }
+          } else {
+            return null;
+          }
+        }
+      );
+
+      const sectionToAnswerSheetResponses = (
+        await Promise.all(sectionToAnswerSheetRequests)
+      );
+
+      const sectionToAnswerSheetResponse = sectionToAnswerSheetResponses.filter(
+        (s) => s !== undefined
+      )[0]
+
+      if (!sectionToAnswerSheetResponse) {
+        return Promise.resolve('solve');
+      } else if (sectionToAnswerSheetResponse.endDate) {
+        return Promise.resolve('finished');
+      } else if (sectionToAnswerSheetResponse.startDate) {
+        return Promise.resolve('solve');
+      } else {
+        return Promise.resolve('solve');
+      }
+    };
+
+    const getButtonOnClick = async (
+      section: Section,
+      sectionToAnswerSheets: Section2AS[]
+    ) => {
+      const sectionToAnswerSheetRequests = sectionToAnswerSheets.map(
+        async (s) => {
+          const response =
+            await sectionToAnswerSheetService.getOneSectionToAnswerSheet(s.id);
+
+          if (response.status >= 200 && response.status < 300) {
+            if (response.data.sectionRef === section.id) {
+              return response.data;
+            }
+          } else {
+            return;
+          }
+        }
+      );
+
+      const sectionToAnswerSheetResponses = await Promise.all(
+        sectionToAnswerSheetRequests
+      );
+
+      const sectionToAnswerSheetResponse = sectionToAnswerSheetResponses.filter(
+        (s) => s !== undefined
+      )[0]
+
+      if (!sectionToAnswerSheetResponse) {
+        startSectionHandler(section.id);
+      } else if (sectionToAnswerSheetResponse?.endDate) {
+      } else if (sectionToAnswerSheetResponse?.startDate) {
+        router.push(
+          `/exams/${router.query.answerSheetId}/${sectionToAnswerSheetResponse.id}`
+        );
+      }
+    };
+
     return (
       <>
         <Layout sidebar active={1} sidebarClosed header headerTitle="Seu Exame">
           <>
             <header className={styles.header}>
-              <h3>Etapas</h3>
+              <h3
+                onClick={() => {
+                  getButtonText(sectionsData[0], sectionToAnswerSheets);
+                }}
+              >
+                Etapas
+              </h3>
               <p>
                 <FaHourglassHalf /> Tempo restante para o teste:{' '}
                 <Timer
@@ -173,52 +296,32 @@ const ExamPage = () => {
               onSubmit={submitHandler}
               id="exam"
             >
-              {sectionsData.map((section, index) => (
-                <div className={styles.cardWrapper} key={index}>
-                  <Card key={index}>
-                    <div className={styles.cardContent}>
-                      <div className={styles.infosContainer}>
-                        <h1>{index + 1}</h1>
-                        <div className={styles.infos}>
-                          <h3>{section.name}</h3>
-                          <p>{section.description}</p>
+              {sectionsData.map((section, index) => {
+                return (
+                  <div className={styles.cardWrapper} key={index}>
+                    <Card key={index}>
+                      <div className={styles.cardContent}>
+                        <div className={styles.infosContainer}>
+                          <h1>{index + 1}</h1>
+                          <div className={styles.infos}>
+                            <h3>{section.name}</h3>
+                            <p>{section.description}</p>
+                          </div>
+                        </div>
+                        <div className={styles.buttonsContainer}>
+                          <Button
+                            text={getButtonText(section, sectionToAnswerSheets)}
+                            type={getButtonType(section, sectionToAnswerSheets)}
+                            onClick={() =>
+                              getButtonOnClick(section, sectionToAnswerSheets)
+                            }
+                          />
                         </div>
                       </div>
-                      <div className={styles.buttonsContainer}>
-                        <Button
-                          text={
-                            sectionToAnswerSheets.length === 0
-                              ? 'Resolver'
-                              : sectionToAnswerSheets[index]?.endDate
-                              ? 'Finalizado'
-                              : 'Resolver'
-                          }
-                          type={
-                            sectionToAnswerSheets.length === 0
-                              ? 'solve'
-                              : sectionToAnswerSheets[index]?.endDate
-                              ? 'finished'
-                              : 'solve'
-                          }
-                          onClick={
-                            sectionToAnswerSheets[index]?.endDate
-                              ? () => {
-                                  console.log('oi');
-                                }
-                              : sectionToAnswerSheets[index]?.startDate
-                              ? () => {
-                                  router.push(
-                                    `/exams/${router.query.answerSheetId}/${sectionToAnswerSheets[index]?.id}`
-                                  );
-                                }
-                              : () => startSectionHandler(section.id)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              ))}
+                    </Card>
+                  </div>
+                );
+              })}
 
               <div className={styles.actions}>
                 <button

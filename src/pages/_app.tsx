@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import cookies from 'react-cookies';
+import { Toaster } from 'react-hot-toast';
 
 import userService from '@/services/userService';
 
 import '@/styles/globals.scss';
-import { Toaster } from 'react-hot-toast';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

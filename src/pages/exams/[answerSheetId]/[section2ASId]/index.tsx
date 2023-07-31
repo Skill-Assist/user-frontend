@@ -56,7 +56,7 @@ const Section = () => {
 
     if (section2ASId && answerSheetId) {
       const section2ASResponse =
-        await sectionToAnswerSheetService.getSectionToAnswerSheetService(
+        await sectionToAnswerSheetService.getSectionToAnswerSheetWithAnswers(
           section2ASId as string
         );
 
