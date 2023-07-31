@@ -69,7 +69,7 @@ const CompletionPage = () => {
     );
   } else if (!showScore) {
     cookie.remove('token');
-    toast.error('Sua seção expirou. Faça login novamente', {
+    toast.error('Sua sessão expirou. Faça login novamente', {
       icon: '⏱️',
     });
     setTimeout(() => {
