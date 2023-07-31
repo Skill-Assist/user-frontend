@@ -17,6 +17,7 @@ import { Invitation } from '@/types/invitation';
 
 import styles from './styles.module.scss';
 import { toast } from 'react-hot-toast';
+import userService from '@/services/userService';
 
 const Intro = () => {
   const [pageLoading, setPageLoading] = useState(true);
@@ -33,16 +34,18 @@ const Intro = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const localStorageUser = localStorage.getItem('skillAssistUser');
-    const parsedUser = JSON.parse(localStorageUser as string);
+  const fetchData = async () => {
     const answerSheetId = router.query.answerSheetId as string;
 
-    if (parsedUser) {
-      setUser(parsedUser);
+    const response = await userService.getProfile();
 
-      if (parsedUser.invitationsRef && answerSheetId) {
-        const invitationResponse = parsedUser.invitationsRef.find(
+    console.log(response)
+
+    if (response.status >= 200 && response.status < 300) {
+      setUser(response.data);
+
+      if (response.data.invitationsRef && answerSheetId) {
+        const invitationResponse = response.data.invitationsRef.find(
           (invitation: Invitation) => {
             if (invitation.examRef.answerSheetsRef) {
               return invitation.examRef.answerSheetsRef.id === +answerSheetId;
@@ -55,10 +58,14 @@ const Intro = () => {
         if (invitationResponse) {
           setInvitationData(invitationResponse);
           setExamData(invitationResponse.examRef);
-          setPageLoading(false);
         }
+        setPageLoading(false);
       }
     }
+  }
+
+  useEffect(() => {
+    fetchData();
   }, [router]);
 
   if (pageLoading) {
