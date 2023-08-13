@@ -21,17 +21,17 @@ const MultipleChoiceQuestion: FC<Props> = ({
 
   return (
     <form className={styles.formContainer}>
-      {Object.entries(options).map(([key, value]) => (
-        <div key={key}>
+      {options.map((option, index) => (
+        <div key={index}>
           <input
             type="radio"
-            id={key}
+            id={option.identifier}
             name="option"
-            value={key}
-            checked={selectedOption === key}
+            value={option.identifier}
+            checked={selectedOption === option.identifier}
             onChange={onChange}
           />
-          <label htmlFor={key}>{value}</label>
+          <label htmlFor={option.identifier}>{option.description}</label>
         </div>
       ))}
     </form>

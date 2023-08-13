@@ -35,43 +35,44 @@ const Home = () => {
   const data = {
     slides: [
       {
-        icon: 'automation.svg',
-        id: 'automation',
-        title: 'Plug-and-play',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
+        icon: 'ai.svg',
+        id: 'ai',
+        title: 'Augmented AI',
+        copy: 'Elaboração e correção por IA, com possibilidade revisão humana.',
       },
       {
         icon: 'proctoring.svg',
         id: 'proctoring',
         title: 'Proctoring',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
+        copy: 'Monitoramente do candidato durante a prova.',
       },
       {
-        icon: 'plug-and-play.svg',
-        id: 'plug-and-play',
-        title: 'Plug-and-play',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
+        icon: 'setup.svg',
+        id: 'setup',
+        title: 'Setup customizado',
+        copy: 'Configuração personalizada de acordo com o que for necessário',
+      },
+      {
+        icon: 'feedback.svg',
+        id: 'feedback',
+        title: 'Feedback',
+        copy: 'Dashboard com insights do resultado do candidato.',
       },
       {
         icon: 'curva.svg',
         id: 'curva',
         title: 'Notas "na curva"',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
+        copy: 'Notas distribuidas de acordo com os pares.',
       },
       {
-        icon: 'ai.svg',
-        id: 'ai',
-        title: 'Correção baseada em AI',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
-      },
-      {
-        icon: 'rocket.svg',
-        id: 'rocket',
-        title: 'Escala do processo',
-        copy: 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies aliquam.',
+        icon: 'security.svg',
+        id: 'security',
+        title: 'Segurança',
+        copy: 'Criptografia e arquitetura em nuvem para proteção dos dados.',
       },
     ],
   };
+
   useEffect(() => {
     const showAnnouncementCookie = cookie.load(
       'show_skill_assist_announcement'

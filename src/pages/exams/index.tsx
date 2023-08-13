@@ -79,7 +79,7 @@ const Exams: FC = () => {
                   />
                 ) : (
                   exams &&
-                  exams.map((invitation: Invitation) => (
+                  exams.slice(0, 5).map((invitation: Invitation) => (
                     <ExamCard invitation={invitation} key={invitation.id}/>
                   ))
                 )}

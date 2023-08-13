@@ -207,7 +207,7 @@
   transform: translateX(-50%);
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     display: none;
   }
@@ -241,6 +241,7 @@
 .tagsContainer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 
   div {
@@ -257,6 +258,7 @@
 
 .modalContent {
   position: relative;
+  overflow: scroll;
 
   hr {
     margin: 10px 0;

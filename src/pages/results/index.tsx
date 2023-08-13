@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import Layout from '@/components/layout';
 import ResultCard from '@/components/resultCard';
+import Placeholder from '@/components/placeholder';
 
 import examService from '@/services/examService';
 
@@ -70,7 +71,12 @@ const Results = () => {
         <Layout header headerTitle="Seus Resultados" sidebar active={3}>
           <div className={styles.content}>
             {resultData.length === 0 ? (
-              <p>Sem Resultados</p>
+              <Placeholder
+              link="/exams"
+                title="Você ainda não possui exames concluídos"
+                subtitle="Aqui você poderá ver os resultados dos seus exames"
+                buttonText='Ir para "Meus Exames"'
+              />
             ) : (
               resultData.map((invitation: Invitation) => (
                 <ResultCard key={invitation.id} invitation={invitation} />
