@@ -37,18 +37,18 @@ const Home = () => {
       {
         icon: 'ai.svg',
         id: 'ai',
-        title: 'Augmented AI',
-        copy: 'Elaboração e correção por IA, com possibilidade revisão humana.',
+        title: 'Elaboração',
+        copy: 'Elaboração de questões por meio do uso de IA',
       },
       {
         icon: 'proctoring.svg',
         id: 'proctoring',
-        title: 'Proctoring',
-        copy: 'Monitoramente do candidato durante a prova.',
+        title: 'Correção',
+        copy: 'Provas com correção automatizada por IA',
       },
       {
-        icon: 'setup.svg',
-        id: 'setup',
+        icon: 'automation.svg',
+        id: 'automation',
         title: 'Setup customizado',
         copy: 'Configuração personalizada de acordo com o que for necessário',
       },
@@ -61,14 +61,14 @@ const Home = () => {
       {
         icon: 'curva.svg',
         id: 'curva',
-        title: 'Notas "na curva"',
+        title: 'Comparação Global',
         copy: 'Notas distribuidas de acordo com os pares.',
       },
       {
-        icon: 'security.svg',
-        id: 'security',
-        title: 'Segurança',
-        copy: 'Criptografia e arquitetura em nuvem para proteção dos dados.',
+        icon: 'setup.svg',
+        id: 'setup.svg',
+        title: 'Anti-Fraude',
+        copy: 'Monitoramente do candidato durante a prova.',
       },
     ],
   };
@@ -137,7 +137,7 @@ const Home = () => {
               </button>
             </div>
           </div>
-          {showAnnouncement === 'true' && (
+          {/* {showAnnouncement === 'true' && (
             <div className={styles.announcementContainer}>
               <AiOutlineCloseCircle
                 size={25}
@@ -150,7 +150,7 @@ const Home = () => {
               />
               Anuncio
             </div>
-          )}
+          )} */}
           <div className={styles.featuresContainer}>
             <h2>Features</h2>
             <ul>

@@ -19,7 +19,7 @@ const ProgammingQuestion: FC<Props> = ({
   return (
     <div className={styles.editor}>
       <Editor
-        language={language || "javascript"}
+        language={"C++"}
         onChange={(value) => onChange(value)}
         theme="vs-dark"
         value={defaultAnswer}
