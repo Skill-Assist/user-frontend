@@ -41,7 +41,7 @@ const CompletionPage = () => {
       ) {
         setShowScore(answerSheetResponse.data[0].__exam__.showScore);
       } else {
-        toast.error('Não foi possível obter os dados do exame');
+        toast.error('Não foi possível obter os dados do teste');
       }
     }
 
@@ -81,15 +81,15 @@ const CompletionPage = () => {
       <Layout header sidebar sidebarClosed active={1}>
         <div className={styles.container}>
           <div className={styles.successContainer}>{View}</div>
-          <h1>Meus parabéns, você concluiu o exame com sucesso!</h1>
+          <h1>Meus parabéns, você concluiu o teste com sucesso!</h1>
           {showScore ? (
             <p>
-              Seu exame foi enviado para correção, em breve você terá acesso a
+              Seu teste foi enviado para correção, em breve você terá acesso a
               sua pontuação.
             </p>
           ) : (
             <p>
-              Seu exame foi enviado para correção, aguarde um retorno do
+              Seu teste foi enviado para correção, aguarde um retorno do
               responsável.
             </p>
           )}

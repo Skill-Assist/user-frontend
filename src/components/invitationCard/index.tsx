@@ -166,7 +166,7 @@ const InvitationCard: FC<Props> = ({ invitation, denied, expired }: Props) => {
                 <>
                   <h2 className={styles.modalTitle}>Você tem certeza?</h2>
                   <p className={styles.modalText}>
-                    Você tem certeza que deseja negar o convite para o exame{" "}
+                    Você tem certeza que deseja negar o convite para o teste{" "}
                     <strong>{examTitle}</strong>?
                   </p>
                   <div className={styles.modalActions}>

@@ -73,9 +73,9 @@ const Results = () => {
             {resultData.length === 0 ? (
               <Placeholder
               link="/exams"
-                title="Você ainda não possui exames concluídos"
-                subtitle="Aqui você poderá ver os resultados dos seus exames"
-                buttonText='Ir para "Meus Exames"'
+                title="Você ainda não possui testes concluídos"
+                subtitle="Aqui você poderá ver os resultados dos seus testes"
+                buttonText='Ir para "Meus testes"'
               />
             ) : (
               resultData.map((invitation: Invitation) => (

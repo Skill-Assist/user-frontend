@@ -124,8 +124,8 @@ const Invitations: FC = () => {
         {!loading && allInvitations.length === 0 ? (
           <Placeholder
             title="Sem convites por aqui... Aguardemos até que seja chamado para um teste!"
-            subtitle="Enquanto isso, dê uma olhada nos exames públicos"
-            buttonText="Ver exames públicos"
+            subtitle="Enquanto isso, dê uma olhada nos testes públicos"
+            buttonText="Ver testes públicos"
           />
         ) : (
           <>

@@ -17,7 +17,7 @@ const InvitationPlaceholder = () => {
       <p>
         Você ainda não possui nenhum convite. <br /> 
         Entre em contato com um recrutador ou <br />
-        conheça nossos exames públicos
+        conheça nossos testes públicos
       </p>
       <div>{View}</div>
     </div>

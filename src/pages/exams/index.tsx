@@ -31,9 +31,9 @@ const Exams: FC = () => {
       <div className={styles.container}>
         {!loading && exams.length === 0 ? (
           <Placeholder
-            title="Ops, parece que você não está inscrito para nenhum exame"
-            subtitle="Enquanto isso, dê uma olhada nos exames públicos"
-            buttonText="Ver exames públicos"
+            title="Ops, parece que você não está inscrito para nenhum teste"
+            subtitle="Enquanto isso, dê uma olhada nos testes públicos"
+            buttonText="Ver testes públicos"
           />
         ) : (
           <>

@@ -20,7 +20,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
 
     humanExamDeadline = examDeadline.toLocaleString('pt-BR', {
       day: 'numeric',
-      month: 'long',
+      month: 'numeric',
       year: 'numeric',
     });
   }
@@ -33,7 +33,7 @@ const ExamCard: FC<Props> = ({ invitation }: Props) => {
 
   let humanSubmissionDeadline = submissionDeadline.toLocaleString('pt-BR', {
     day: 'numeric',
-    month: 'long',
+    month: 'numeric',
     year: 'numeric',
   });
 
