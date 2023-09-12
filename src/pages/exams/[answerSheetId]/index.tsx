@@ -272,7 +272,7 @@ const ExamPage = () => {
 
     return (
       <>
-        <Layout sidebar active={1} sidebarClosed header headerTitle="Seu Exame">
+        <Layout sidebar active={1} sidebarClosed header headerTitle="Seu teste">
           <>
             <header className={styles.header}>
               <h3

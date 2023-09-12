@@ -27,7 +27,7 @@ const Exams: FC = () => {
   }, []);
 
   return (
-    <Layout header headerTitle="Seus Exames" sidebar active={1}>
+    <Layout header headerTitle="Seus testes" sidebar active={1}>
       <div className={styles.container}>
         {!loading && exams.length === 0 ? (
           <Placeholder
@@ -41,7 +41,7 @@ const Exams: FC = () => {
               <Search
                 search={search}
                 onSearch={setSearch}
-                placeholder="Pesquisar convites"
+                placeholder="Pesquisar testes"
               />
               <button onClick={fetchData}>
                 {loading ? (

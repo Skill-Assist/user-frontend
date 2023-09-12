@@ -165,8 +165,8 @@ const questionService = {
 
       if (statusCode === 418 || message.includes("Invalid token")) {
         cookie.remove("token");
-        toast.error("Sua sessão expirou. Faça login novamente", {
-          icon: "⏱️",
+        toast.error("Erro de conexão. Verifique sua internet e tente novamente...", {
+          icon: "📶",
         });
         setTimeout(() => {
           window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;

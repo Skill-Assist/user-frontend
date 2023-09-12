@@ -137,7 +137,7 @@ const Intro = () => {
                   </h1>
                 </div>
                 <div className={styles.testInfos}>
-                  <p>Deadline: {humanDeadline}</p>
+                  <p>Prazo: {humanDeadline}</p>
                   <div>
                     {examData.durationInHours && (
                       <p>

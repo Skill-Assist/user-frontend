@@ -160,11 +160,11 @@ const Sidebar: FC<Props> = ({
             ))}
       </div>
 
-      <div className={`${styles.footer} ${show ? styles.openFooter : {}}`}>
+      {/* <div className={`${styles.footer} ${show ? styles.openFooter : {}}`}>
         <span>
           &copy; {new Date().getFullYear()} Skill Assist | All rights reserved
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };
