@@ -42,7 +42,7 @@ const Results = () => {
 
   if (pageLoading) {
     return (
-      <Layout sidebar header headerTitle="Dashboard" active={0}>
+      <Layout sidebar header active={0}>
         <div className="loadingContainer">
           <TailSpin
             height="80"
@@ -68,7 +68,7 @@ const Results = () => {
   } else {
     return (
       <div className={styles.container}>
-        <Layout header headerTitle="Seus Resultados" sidebar active={3}>
+        <Layout header sidebar active={3}>
           <div className={styles.content}>
             {resultData.length === 0 ? (
               <Placeholder

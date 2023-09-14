@@ -119,7 +119,7 @@ const Invitations: FC = () => {
   };
 
   return (
-    <Layout sidebar active={2} header headerTitle="Seus Convites">
+    <Layout sidebar active={2} header>
       <div className={styles.container}>
         {!loading && allInvitations.length === 0 ? (
           <Placeholder

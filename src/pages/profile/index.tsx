@@ -69,7 +69,7 @@ const Profile = () => {
 
   if (pageLoading) {
     return (
-      <Layout sidebar header headerTitle="Profile" active={10}>
+      <Layout sidebar header active={10}>
         <div className="loadingContainer">
           <TailSpin
             height="80"
@@ -100,7 +100,6 @@ const Profile = () => {
         sidebar
         sidebarClosed
         goBack
-        headerTitle="Profile"
         contentClassName={styles.p0}
         active={10}
       >
