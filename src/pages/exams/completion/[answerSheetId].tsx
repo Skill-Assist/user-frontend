@@ -67,15 +67,6 @@ const CompletionPage = () => {
         />
       </div>
     );
-  } else if (!showScore) {
-    cookie.remove('token');
-    toast.error('Erro de conexão. Verifique sua internet e tente novamente...', {
-      icon: '📶',
-    });
-    setTimeout(() => {
-      window.location.href = `${process.env.NEXT_PUBLIC_LOGIN_URL}`;
-    }, 2000);
-    return;
   } else {
     return (
       <Layout header sidebar sidebarClosed active={1}>

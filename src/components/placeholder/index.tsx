@@ -5,6 +5,7 @@ import ComputerMan from '@public/lottie/computer-man.json';
 
 import styles from './styles.module.scss';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 interface Props {
   title: string;
@@ -31,7 +32,18 @@ const Placeholder: FC<Props> = ({
       <div className={styles.content}>
         <h1>{title}</h1>
         <p>{subtitle}</p>
-        <Link href={link ? link : '#'} className={styles.button}>
+        <Link
+          href={link ? link : '#'}
+          onClick={() => {
+            if (!link) {
+              toast.loading('Feature em desenvolvimento', {
+                duration: 3000,
+                position: 'top-right',
+              });
+            }
+          }}
+          className={styles.button}
+        >
           {buttonText}
         </Link>
       </div>
